@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://lcomplete.github.com
+title: lcomplete's Blog
+subtitle: A road of hacker.
+author: lcomplete
 simple_search: http://google.com/search
 description:
 
@@ -85,8 +85,8 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
-disqus_show_comment_count: false
+disqus_short_name: lcomplete
+disqus_show_comment_count: true
 
 # Google Analytics
 google_analytics_tracking_id:
