@@ -3,7 +3,7 @@ layout: post
 title: "七周七语言之用ruby做点什么"
 date: 2013-05-25 01:13
 comments: true
-categories: 编程语言, 编程, ruby
+categories: 编程语言 编程 ruby
 ---
 
 > 每学一门语言，思维方式都会发生改变，编程语言亦是如此。
