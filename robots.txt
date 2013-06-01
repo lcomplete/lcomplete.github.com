@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://lcomplete.github.com/sitemap.xml 
+Sitemap: http://lcomplete.github.io/sitemap.xml 

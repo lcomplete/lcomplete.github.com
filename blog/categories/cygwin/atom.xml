@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: cygwin | lcomplete's Blog]]></title>
-  <link href="http://lcomplete.github.com/blog/categories/cygwin/atom.xml" rel="self"/>
-  <link href="http://lcomplete.github.com/"/>
-  <updated>2013-06-02T02:52:30+08:00</updated>
-  <id>http://lcomplete.github.com/</id>
+  <link href="http://lcomplete.github.io/blog/categories/cygwin/atom.xml" rel="self"/>
+  <link href="http://lcomplete.github.io/"/>
+  <updated>2013-06-02T03:01:54+08:00</updated>
+  <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[在windows下通过cygwin使用octopress]]></title>
-    <link href="http://lcomplete.github.com/blog/2013/06/01/use-octopress-in-cygwin/"/>
+    <link href="http://lcomplete.github.io/blog/2013/06/01/use-octopress-in-cygwin/"/>
     <updated>2013-06-01T16:50:00+08:00</updated>
-    <id>http://lcomplete.github.com/blog/2013/06/01/use-octopress-in-cygwin</id>
+    <id>http://lcomplete.github.io/blog/2013/06/01/use-octopress-in-cygwin</id>
     <content type="html"><![CDATA[<p>在windows下使用git和octopress还真是个麻烦事，本文记录了在windows下利用cygwin安装git和使用octopress的过程，希望对大家有所帮助。</p>
 ]]></content>
   </entry>

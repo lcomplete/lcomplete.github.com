@@ -1,27 +1,27 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://lcomplete.github.com/blog/2013/04/03/hello-github/</loc>
+        <loc>http://lcomplete.github.io/blog/2013/04/03/hello-github/</loc>
         <lastmod>2013-06-01T23:43:38+08:00</lastmod>
     </url>
     <url>
-        <loc>http://lcomplete.github.com/blog/2013/05/25/sevenlang-ruby/</loc>
+        <loc>http://lcomplete.github.io/blog/2013/05/25/sevenlang-ruby/</loc>
         <lastmod>2013-06-01T23:43:38+08:00</lastmod>
     </url>
     <url>
-        <loc>http://lcomplete.github.com/blog/2013/06/01/use-octopress-in-cygwin/</loc>
+        <loc>http://lcomplete.github.io/blog/2013/06/01/use-octopress-in-cygwin/</loc>
         <lastmod>2013-06-02T02:52:29+08:00</lastmod>
     </url>
     <url>
-        <loc>http://lcomplete.github.com/blog/archives/</loc>
+        <loc>http://lcomplete.github.io/blog/archives/</loc>
         <lastmod>2013-06-02T02:52:29+08:00</lastmod>
     </url>
     <url>
-        <loc>http://lcomplete.github.com/</loc>
+        <loc>http://lcomplete.github.io/</loc>
         <lastmod>2013-06-02T02:52:29+08:00</lastmod>
     </url>
     <url>
-        <loc>http://lcomplete.github.com/robots.txt</loc>
+        <loc>http://lcomplete.github.io/robots.txt</loc>
         <lastmod>2013-06-01T23:43:38+08:00</lastmod>
     </url>
 </urlset>

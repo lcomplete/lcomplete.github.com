@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ruby | lcomplete's Blog]]></title>
-  <link href="http://lcomplete.github.com/blog/categories/ruby/atom.xml" rel="self"/>
-  <link href="http://lcomplete.github.com/"/>
-  <updated>2013-06-02T02:52:30+08:00</updated>
-  <id>http://lcomplete.github.com/</id>
+  <link href="http://lcomplete.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://lcomplete.github.io/"/>
+  <updated>2013-06-02T03:01:54+08:00</updated>
+  <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[七周七语言之用ruby做点什么]]></title>
-    <link href="http://lcomplete.github.com/blog/2013/05/25/sevenlang-ruby/"/>
+    <link href="http://lcomplete.github.io/blog/2013/05/25/sevenlang-ruby/"/>
     <updated>2013-05-25T01:13:00+08:00</updated>
-    <id>http://lcomplete.github.com/blog/2013/05/25/sevenlang-ruby</id>
+    <id>http://lcomplete.github.io/blog/2013/05/25/sevenlang-ruby</id>
     <content type="html"><![CDATA[<blockquote><p>每学一门语言，思维方式都会发生改变，编程语言亦是如此。
 <div style="text-align:right;">《七周七语言》</div></p></blockquote>
 
