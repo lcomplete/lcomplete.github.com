@@ -31,7 +31,7 @@ class JanDanSpider
     attr_accessor :base_uri, :cur_page # 定义属性访问器
 
     def initialize(pagesize)
-        @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示局部变量
+        @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示全局变量
         @dir = '/media/Develop/MyCode/SevenLang/ruby/pic'
         @pagesize = Integer(pagesize) # 整型转换
     end
