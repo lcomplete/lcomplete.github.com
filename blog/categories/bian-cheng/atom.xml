@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 编程 | lcomplete's Blog]]></title>
   <link href="http://lcomplete.github.io/blog/categories/bian-cheng/atom.xml" rel="self"/>
   <link href="http://lcomplete.github.io/"/>
-  <updated>2013-06-02T03:01:54+08:00</updated>
+  <updated>2013-06-29T02:02:15+08:00</updated>
   <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
@@ -12,6 +12,352 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[七周七语言之使用prolog解决爱因斯坦斑马难题]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/28/sevenlang-prolog/"/>
+    <updated>2013-06-28T23:47:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/28/sevenlang-prolog</id>
+    <content type="html"><![CDATA[<p>目前商业上广泛使用的编程语言多是命令式或函数式的编程语言，这些语言在某些方面具有很高的相似度，比如 python 和 ruby 在很多地方是相通的，学会了一门，再学另一门便能够事半功倍，很多语言都是如此，然而今天要介绍的这门语言，却跟主流编程语言截然不同，它就是prolog——一门逻辑编程语言。</p>
+
+<p>prolog 是 Programming in Logic 的缩写，它被广泛应用在人工智能、自然语言等研究领域，使用它来解决逻辑难题完全不在话下，今天我们将使用它来解决著名的爱因斯坦逻辑难题（斑马难题），首先让我们来认识一下 prolog 的语法。</p>
+
+<h2>prolog 基本语法</h2>
+
+<p>prolog 中有3种基本元素：事实、规则和查询。事实和规则用于描述数据，查询用于获取问题的答案。<br/>
+我们可以这样定义事实：
+<code>prolog
+human(lucy).
+human(lili).
+father(lucy,david).
+sister(lucy,lili).
+sister(lili,lucy).
+</code>
+这段代码表示 lucy 和 lili 是人类，且她们是姐妹，david 是 lucy 的父亲，继续定义规则：
+``` prolog
+daughter(Father,A,B) :-</p>
+
+<pre><code>father(A,Father), sister(A,B)
+</code></pre>
+
+<p>```
+这段规则表示对于变量A、B，如果Father变量是A的父亲，且A、B是姐妹，则A、B是Father对象的女儿。  <br/>
+注意，在 prolog 中一个词若以小写开头，那么它是一个固定值，若以大写字母开头，则是一个变量。 <br/>
+将这些事实和规则放在一个文件里面，在命令行下打开 prolog ，对这个文件进行编译，即可提出查询，比如 daughter(david,A,_)，prolog 将会求出A可能的取值并输出到控制台，最后的下划线是一个占位符，不会进行求值。</p>
+
+<p>在 prolog 中还可以使用递归完成列表和数学等运算，这部分是很强大的，但这里不打算讲，因为有了上面的基础知识后，我们就可以利用它来解决逻辑问题了，下面就让我们来解决“斑马难题”吧。</p>
+
+<h2>爱因斯坦逻辑难题</h2>
+
+<p>题目：5个不同国家且工作各不相同的人分别住在一条街上的5所房子里，每所房子的颜色不同，每个人都有自己养的不同宠物，喜欢喝不同的饮料。根据以下提示，你能告诉我哪所房子里的人养斑马，哪所房子里的人喜欢喝矿泉水吗？</p>
+
+<ol>
+<li>英国人住在红色的房子里</li>
+<li>西班牙人养了一条狗</li>
+<li>日本人是一个油漆工</li>
+<li>意大利人喜欢喝茶</li>
+<li>挪威人住在左边的第一个房子里</li>
+<li>绿房子在白房子的右边</li>
+<li>摄影师养了一只蜗牛</li>
+<li>外交官住在黄房子里</li>
+<li>中间那个房子的人喜欢喝牛奶</li>
+<li>喜欢喝咖啡的人住在绿房子里</li>
+<li>挪威人住在蓝色的房子旁边</li>
+<li>小提琴家喜欢喝橘子汁</li>
+<li>养狐狸的人所住的房子与医生的房子相邻</li>
+<li>养马的人所住的房子与外交官的房子相邻</li>
+</ol>
+
+
+<p>这道题的解题关键在于，要以一种清晰的方式将每个房子相关的属性（国家、颜色、工作、宠物、饮料、编号）列出来，前面5个提示中包含了5个国家，那么可以利用这一点画出一个表格，每一行表示一个国家，每一列表示房子的一种属性。一步步根据提示得到一些推论，将结果填入表格，答案便渐渐清晰起来，使用这种人工方式推理的结果如下图所示：
+<img src="/assets/blog/20130629/q-zebra.png" alt="爱因斯坦逻辑难题结果" /></p>
+
+<p>虽然我们知道了解题的关键，但这个问题仍然需要经过很多步的推导才能得出结果，如果使用 prolog 那得到这个问题的答案就简单多了，只需要定义好事实和规则，然后向 prolog 提出问题，逻辑引擎就会为我们查出结果来。</p>
+
+<p>下面是解决这个问题的 prolog 代码。
+``` prolog
+house(A,[A,<em>,</em>,<em>,</em>]).
+house(A,[<em>,A,</em>,<em>,</em>]).
+house(A,[<em>,</em>,A,<em>,</em>]).
+house(A,[<em>,</em>,<em>,A,</em>]).
+house(A,[<em>,</em>,<em>,</em>,A]).</p>
+
+<p>right(A,B,[A,B,<em>,</em>,<em>]).
+right(A,B,[</em>,A,B,<em>,</em>]).
+right(A,B,[<em>,</em>,A,B,<em>]).
+right(A,B,[</em>,<em>,</em>,A,B]).</p>
+
+<p>middle(A,[<em>,</em>,A,<em>,</em>]).</p>
+
+<p>first(A,[A,<em>,</em>,<em>,</em>]).</p>
+
+<p>neighbor(A,B,[A,B,<em>,</em>,<em>]).
+neighbor(A,B,[</em>,A,B,<em>,</em>]).
+neighbor(A,B,[<em>,</em>,A,B,<em>]).
+neighbor(A,B,[</em>,<em>,</em>,A,B]).
+neighbor(A,B,[B,A,<em>,</em>,<em>]).
+neighbor(A,B,[</em>,B,A,<em>,</em>]).
+neighbor(A,B,[<em>,</em>,B,A,<em>]).
+neighbor(A,B,[</em>,<em>,</em>,B,A]).</p>
+
+<p>attr(Country,Pet,Color,Drink,Work).</p>
+
+<p>all_houses(Houses) :-</p>
+
+<pre><code>house(attr(britsh,_,red,_,_), Houses),
+house(attr(spain,dog,_,_,_), Houses),
+house(attr(japan,_,_,_,painter), Houses),
+house(attr(italy,_,_,tea,_), Houses),
+house(attr(norway,_,_,_,_), Houses),
+first(attr(norway,_,_,_,_), Houses),
+right(attr(_,_,white,_,_), attr(_,_,green,_,_), Houses),
+house(attr(_,snail,_,_,photographer), Houses),
+house(attr(_,_,yellow,_,diplomat), Houses),
+middle(attr(_,_,_,milk,_), Houses),
+house(attr(_,_,green,cafe,_), Houses),
+neighbor(attr(norway,_,_,_,_), attr(_,_,blue,_,_), Houses),
+house(attr(_,_,_,orange,violinst), Houses),
+neighbor(attr(_,fox,_,_,_), attr(_,_,_,_,doctor), Houses),
+neighbor(attr(_,horse,_,_,_), attr(_,_,_,_,diplomat), Houses),
+
+house(attr(_,zebra,_,_,_), Houses),
+house(attr(_,_,_,water,_), Houses).
+</code></pre>
+
+<p>```
+在事实部分，将房子看做一个整体，描述了房子在5所房子中、房子的左右关系、中间的房子处于什么位置、第一所房子处于什么位置、房子间的相邻关系以及每所房子拥有哪些属性。<br/>
+规则部分包含了对题目中提示的描述和最终问题的描述，这些定义是为了告诉逻辑引擎，在求值时必须满足这些条件。<br/>
+最终的查询为 all_houses(A) ，prolog 逻辑引擎将会查找出满足结果的房子数组，注意每所房子由它的属性组成，这样最后得到的结果为：</p>
+
+<p>[attr(britsh, horse, red, orange, violinst),   <br/>
+ attr(spain, dog, yellow, water, diplomat),   <br/>
+ attr(japan, fox, white, milk, painter),   <br/>
+ attr(norway, zebra, green, cafe, doctor),   <br/>
+ attr(italy, snail, blue, tea, photographer)] .</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[七周七语言之用Io编写领域特定语言]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/05/sevenlang-io/"/>
+    <updated>2013-06-05T05:56:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/05/sevenlang-io</id>
+    <content type="html"><![CDATA[<p>Io 语言是在2002年创造出来的，虽然距今已经有11个年头了，但是对于一门编程语言来说，它还只能算是一门年轻的语言。Io 并不是主流编程语言，没有什么名气，就连名字取的也并不适合推广，io 有太多其他的含义了，用google直接搜索 io 的话，很难找到关于这门编程语言的资料，英文推荐搜索“io language”，中文则建议搜索“io 编程语言”。</p>
+
+<h2>Io 的优缺点</h2>
+
+<p>Io 是个小众语言，文档不足，这是其中的一个缺点，但是这门语言吸收了许多语言的特点，具有很高的学习价值。Io 的设计借鉴了 SmallTalk、Self、NewtonScript、Act1、LISP和 Lua 的一些特点，它是一门基于原型式设计的编程语言，具有面向对象特性，语法概念极少，它没有关键字，所以能够在很短的时间内熟悉语法，Io 还有出色的并发库，利用它能够以简单直观的方式编写并发程序。</p>
+
+<p>Io 有很少的语法规则和语言特性，这似乎在某种程度上束缚了它的能力，但是使用 Io 可以很容易地扩展这门语言自身的语法，我们可以自定义运算符或改变运算符的行为，也可以使用元编程在任何时候改变任何对象的行为。正是这些高扩展性和可定制性使得 Io 在创造<strong>领域特定语言</strong>（Domain Specific Language，简称DSL）方面具有非常强大的能力，我们可以利用它创造出自己喜欢的语法，编写出<strong>能够编写程序的程序</strong>，学习 Io 颇具启发性，怎样利用 Io 打造出能够提高编程效率的 DSL 更是一个值得深入研究的课题。</p>
+
+<h2>什么是领域特定语言？</h2>
+
+<p>Martin Flower 在《领域特定语言》一书中给出的定义是：针对某一特定语言，具有受限表达性的一种计算机程序设计语言。DSL 不是图灵完备的，所以它的表达能力有限；由于它是领域特定的，它的出现往往是为了消除业务领域的复杂性，所以 DSL 一般是整洁的、易于使用且接近自然语言的。我们平时在编码的过程中其实会接触到很多领域特定语言，比如 CSS、HTML、XML、JSON、正则表达式、XAML，他们都是针对某一领域的，“求专不求全”，CSS用于定义Web页面样式；HTML用于定义Web界面元素；XML、JSON用于描述数据，这些数据可以作为纯数据，也可作为某种行为的配置。</p>
+
+<p>DSL 从实现角度分为内部DSL和外部DSL，用XML来描述某种行为就是一种常见的外部DSL的形式，利用编程语言自带的语法结构定义出来的 DSL 称为内部DSL，比如时下流行的流畅接口（Fluent Interface）编码方式就是一种内部DSL。上面说到 Io 编程语言可以自定义运算符且具有元编程特性，因此 Io 可以方便的创造出内部DSL，下面我们就通过几个示例来看一看 Io 在这方面的能力。</p>
+
+<h2>使用 Io 创造内部DSL</h2>
+
+<p>先看一个比较简单的例子，可以说在所有的编程语言中都有列表和字典（一些语言中也称为映射）这两种数据结构，在 io 中也不例外，io 中创建列表对象可以使用 list 函数，比如 foo := list(1,2) ，这很方便，然而创建一个字典的写法却比较繁琐，你需要 clone 一个 Map 对象，然后依次调用 atPut 方法向其中添加键值对，作为一个常用的数据结构，这样写不仅会影响效率而且会使代码变的臃肿，纵观其他编程语言，大部分都有相应的字典初始化语法糖，常用的写法为 {"key":"value"} 结构，下面我们就在 io 中来创造这种语法糖。</p>
+
+<p>``` ruby dict.io
+OperatorTable addAssignOperator(":", "atPutNumber")</p>
+
+<p>Map atPutNumber := method(
+  self atPut(</p>
+
+<pre><code>call evalArgAt(0) asMutable removePrefix("\"") removeSuffix("\""),
+call evalArgAt(1)
+</code></pre>
+
+<p>  )
+)</p>
+
+<p>curlyBrackets := method(
+  data := Map clone
+  call message arguments foreach(arg,</p>
+
+<pre><code>data doMessage(arg))
+</code></pre>
+
+<p>  data
+)</p>
+
+<p>squareBrackets := method(</p>
+
+<pre><code>arr := list()
+call message arguments foreach(arg,
+    arr push(call sender doMessage(arg))
+)
+arr
+</code></pre>
+
+<p>)</p>
+
+<p>doFile("dict_sample.io")
+```
+先简单说明一下上面这段代码，OperatorTable 中保存了可用的操作符号表，我们可以使用 addAssignOperator 方法向其中添加用于赋值的操作符号，并将其映射到第二个参数所指定的方法中，第一行代码的意思为将 : 符号映射到 atPutNumber 方法中，当在代码中碰到 <strong>:</strong> 符号时，将调用 <strong>atPutNumber</strong> 方法；<strong>curlyBrackets</strong>、<strong>squareBrackets</strong> 为 io 中的特殊变量，将方法赋值给它们相当于改变 {} 和 [] 符号的行为，在我们的代码中，指定了当碰到 { 符号时初始化 Map 对象，接着循环处理参数，这里的参数是用 , 符号分段的，data doMessage 方法相当于以data为上下文执行参数中的代码，参数代码中若碰到 : 符号则会调用 atPutNumber 方法，将符号左边的参数当作键，右边的参数当作值存入data中，最后返回data。</p>
+
+<p>注意，最后一行的 <strong>doFile</strong> 方法是执行另一文件中的代码的意思，为什么这个例子要分成两个文件呢？主要是因为虽然我们在操作符号表里面添加了一个符号，但是在这个文件的执行上下文中，是不会起效果的，只有调用 doString 或 doFile 才会起效，所以将创建字典的代码放在了下面这个文件中。
+``` ruby dict_sample.io
+dict := {
+  "name": "lcomplete",
+  "array": [1, "str"],
+  "nested": {</p>
+
+<pre><code>"hello" : "io"
+</code></pre>
+
+<p>  }
+}
+```
+很简洁吧，而且还支持嵌套定义哦。</p>
+
+<p>通过第一个例子，相信各位已经能看出 io 在创造内部dsl上的灵活性了，接下来我们看一个更强大的例子，使用 io 让编写html变的更有禅意，何谓禅意，其实是受到 Sublime 上的 ZenCode 插件的启发，使用 ZenCode 语法可以快速的编写 html 片段。这次我们先看一下使用 dsl 的方式。</p>
+
+<p><code>ruby enhance_html.io
+zencode(Html html&gt;head+body&gt;div!content$id@class*3)
+</code></p>
+
+<p>不难发现，这个语法已经跟宿主语言几乎没有任何关系，是一门彻底的内部dsl，上面这段代码生成的 html 如下所示：
+``` html
+<html>
+  <head>
+  </head>
+  <body></p>
+
+<pre><code>&lt;div id="id" class="class"&gt;
+  content
+&lt;/div&gt;
+&lt;div id="id" class="class"&gt;
+  content
+&lt;/div&gt;
+&lt;div id="id" class="class"&gt;
+  content
+&lt;/div&gt;
+</code></pre>
+
+<p>  </body>
+</html>
+```</p>
+
+<p>很强大吧，一行代码就可以生成出这么多的 html，现在我们再看看这个 dsl 是如何定义出来的。
+``` ruby zencode.io
+forward := method(</p>
+
+<pre><code>call message name
+</code></pre>
+
+<p>)</p>
+
+<p>root := nil</p>
+
+<p>Html := Object clone do(</p>
+
+<pre><code>OperatorTable addOperator("@", 15)
+OperatorTable addOperator("$", 15)
+OperatorTable addOperator("&gt;", 15)
+OperatorTable addOperator("+", 15)
+OperatorTable addOperator("*", 15)
+OperatorTable addOperator("!", 15)
+
+@ := method(classname,
+    attrs append(" class=\"#{classname}\"" interpolate)
+    self
+)
+
+$ := method(id,
+    attrs append(" id=\"#{id}\"" interpolate)
+    self
+)
+
+&gt; := method(tag,
+    html := Html clone
+    html tag := tag
+    html parent := self
+    self childs append(html)
+    html
+)
+
++ := method(tag,
+    html := nil
+    if(self parent,
+        html = Html clone
+        html tag := tag
+        self parent childs append(html)
+    )
+    html
+)
+
+* := method(count,
+    self count := count asNumber
+    self
+)
+
+! := method(content,
+    self content := content
+    self
+)
+
+forward := method(
+    name := call message name
+    html := Html clone
+    html tag := name
+    root = html
+    html
+)
+
+init := method(
+    self childs := list()
+    self attrs := list()
+    self count := 1
+    self parent := nil
+    self content := nil
+)
+</code></pre>
+
+<p>)</p>
+
+<p>Html flush := method(</p>
+
+<pre><code>root render("")
+</code></pre>
+
+<p>)</p>
+
+<p>Html render := method(indent,</p>
+
+<pre><code>self count repeat(
+    writeln(indent,"&lt;",self tag,self attrs join(""),"&gt;")
+    childIndent := indent .. "  "
+    if(self content,
+        writeln(childIndent,self content)
+    )
+    self childs foreach(index,arg,
+        arg render(childIndent)
+    )
+    writeln(indent,"&lt;/",self tag,"&gt;")
+)
+</code></pre>
+
+<p>)</p>
+
+<p>zencode := method(html,</p>
+
+<pre><code>html flush
+</code></pre>
+
+<p>)</p>
+
+<p>doFile("enhance_html.io")
+```
+有几处需要说明一下，forward 是一个特殊方法，相当于 ruby 中的 method_missing ，当调用的方法不存在时，系统将会把调用转向到 forward 方法，这就给了我们很大的灵活性，我们无需定义 html、head 等方法，这些未定义的方法会自动转向到 forward 中处理；注意，一共有两个 forward 方法，分别应用在 Object 和 Html 对象上，只有 Html html 会返回 Html 对象，其他的未定义方法会转向到 Object 的 forward 方法上，这里直接将方法名作为字符串返回，新添加的 @、$ 等操作符，将会把接受到的字符串进行处理，最后再返回一个 Html 对象以进行链式调用。</p>
+
+<h2>总结</h2>
+
+<p>在 Io 中可以轻松地定义操作符、实现动态方法或更改所有对象的行为，这些能力是强大的，也是危险的，使用之前需要仔细衡量。当然，如果只是用它来做某一件事情，比如用来编写上面的 ZenCode 时，那么可以大胆发挥自己的想象力，在它的基础上构建一门属于自己的语言。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[七周七语言之用ruby做点什么]]></title>
@@ -48,7 +394,7 @@ require 'nokogiri' # 用于解析html的模块</p>
 <pre><code>attr_accessor :base_uri, :cur_page # 定义属性访问器
 
 def initialize(pagesize)
-    @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示局部变量
+    @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示全局变量
     @dir = '/media/Develop/MyCode/SevenLang/ruby/pic'
     @pagesize = Integer(pagesize) # 整型转换
 end

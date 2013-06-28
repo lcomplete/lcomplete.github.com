@@ -4,7 +4,7 @@
   <title><![CDATA[lcomplete's Blog]]></title>
   <link href="http://lcomplete.github.io/atom.xml" rel="self"/>
   <link href="http://lcomplete.github.io/"/>
-  <updated>2013-06-02T03:01:54+08:00</updated>
+  <updated>2013-06-29T02:02:15+08:00</updated>
   <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
@@ -14,11 +14,902 @@
 
   
   <entry>
+    <title type="html"><![CDATA[七周七语言之使用prolog解决爱因斯坦斑马难题]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/28/sevenlang-prolog/"/>
+    <updated>2013-06-28T23:47:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/28/sevenlang-prolog</id>
+    <content type="html"><![CDATA[<p>目前商业上广泛使用的编程语言多是命令式或函数式的编程语言，这些语言在某些方面具有很高的相似度，比如 python 和 ruby 在很多地方是相通的，学会了一门，再学另一门便能够事半功倍，很多语言都是如此，然而今天要介绍的这门语言，却跟主流编程语言截然不同，它就是prolog——一门逻辑编程语言。</p>
+
+<p>prolog 是 Programming in Logic 的缩写，它被广泛应用在人工智能、自然语言等研究领域，使用它来解决逻辑难题完全不在话下，今天我们将使用它来解决著名的爱因斯坦逻辑难题（斑马难题），首先让我们来认识一下 prolog 的语法。</p>
+
+<h2>prolog 基本语法</h2>
+
+<p>prolog 中有3种基本元素：事实、规则和查询。事实和规则用于描述数据，查询用于获取问题的答案。<br/>
+我们可以这样定义事实：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='prolog'><span class='line'><span class="nf">human</span><span class="p">(</span><span class="s-Atom">lucy</span><span class="p">).</span>
+</span><span class='line'><span class="nf">human</span><span class="p">(</span><span class="s-Atom">lili</span><span class="p">).</span>
+</span><span class='line'><span class="nf">father</span><span class="p">(</span><span class="s-Atom">lucy</span><span class="p">,</span><span class="s-Atom">david</span><span class="p">).</span>
+</span><span class='line'><span class="nf">sister</span><span class="p">(</span><span class="s-Atom">lucy</span><span class="p">,</span><span class="s-Atom">lili</span><span class="p">).</span>
+</span><span class='line'><span class="nf">sister</span><span class="p">(</span><span class="s-Atom">lili</span><span class="p">,</span><span class="s-Atom">lucy</span><span class="p">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码表示 lucy 和 lili 是人类，且她们是姐妹，david 是 lucy 的父亲，继续定义规则：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='prolog'><span class='line'><span class="nf">daughter</span><span class="p">(</span><span class="nv">Father</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">)</span> <span class="p">:-</span>
+</span><span class='line'>    <span class="nf">father</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">Father</span><span class="p">),</span> <span class="nf">sister</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段规则表示对于变量A、B，如果Father变量是A的父亲，且A、B是姐妹，则A、B是Father对象的女儿。  <br/>
+注意，在 prolog 中一个词若以小写开头，那么它是一个固定值，若以大写字母开头，则是一个变量。 <br/>
+将这些事实和规则放在一个文件里面，在命令行下打开 prolog ，对这个文件进行编译，即可提出查询，比如 daughter(david,A,_)，prolog 将会求出A可能的取值并输出到控制台，最后的下划线是一个占位符，不会进行求值。</p>
+
+<p>在 prolog 中还可以使用递归完成列表和数学等运算，这部分是很强大的，但这里不打算讲，因为有了上面的基础知识后，我们就可以利用它来解决逻辑问题了，下面就让我们来解决“斑马难题”吧。</p>
+
+<h2>爱因斯坦逻辑难题</h2>
+
+<p>题目：5个不同国家且工作各不相同的人分别住在一条街上的5所房子里，每所房子的颜色不同，每个人都有自己养的不同宠物，喜欢喝不同的饮料。根据以下提示，你能告诉我哪所房子里的人养斑马，哪所房子里的人喜欢喝矿泉水吗？</p>
+
+<ol>
+<li>英国人住在红色的房子里</li>
+<li>西班牙人养了一条狗</li>
+<li>日本人是一个油漆工</li>
+<li>意大利人喜欢喝茶</li>
+<li>挪威人住在左边的第一个房子里</li>
+<li>绿房子在白房子的右边</li>
+<li>摄影师养了一只蜗牛</li>
+<li>外交官住在黄房子里</li>
+<li>中间那个房子的人喜欢喝牛奶</li>
+<li>喜欢喝咖啡的人住在绿房子里</li>
+<li>挪威人住在蓝色的房子旁边</li>
+<li>小提琴家喜欢喝橘子汁</li>
+<li>养狐狸的人所住的房子与医生的房子相邻</li>
+<li>养马的人所住的房子与外交官的房子相邻</li>
+</ol>
+
+
+<p>这道题的解题关键在于，要以一种清晰的方式将每个房子相关的属性（国家、颜色、工作、宠物、饮料、编号）列出来，前面5个提示中包含了5个国家，那么可以利用这一点画出一个表格，每一行表示一个国家，每一列表示房子的一种属性。一步步根据提示得到一些推论，将结果填入表格，答案便渐渐清晰起来，使用这种人工方式推理的结果如下图所示：
+<img src="http://lcomplete.github.io/assets/blog/20130629/q-zebra.png" alt="爱因斯坦逻辑难题结果" /></p>
+
+<p>虽然我们知道了解题的关键，但这个问题仍然需要经过很多步的推导才能得出结果，如果使用 prolog 那得到这个问题的答案就简单多了，只需要定义好事实和规则，然后向 prolog 提出问题，逻辑引擎就会为我们查出结果来。</p>
+
+<p>下面是解决这个问题的 prolog 代码。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='prolog'><span class='line'><span class="nf">house</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">house</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">house</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">house</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">house</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">right</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">right</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">right</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">right</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">middle</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">first</span><span class="p">(</span><span class="nv">A</span><span class="p">,[</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="nv">B</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="k">_</span><span class="p">]).</span>
+</span><span class='line'><span class="nf">neighbor</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span><span class="nv">B</span><span class="p">,[</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="nv">B</span><span class="p">,</span><span class="nv">A</span><span class="p">]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">attr</span><span class="p">(</span><span class="nv">Country</span><span class="p">,</span><span class="nv">Pet</span><span class="p">,</span><span class="nv">Color</span><span class="p">,</span><span class="nv">Drink</span><span class="p">,</span><span class="nv">Work</span><span class="p">).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">all_houses</span><span class="p">(</span><span class="nv">Houses</span><span class="p">)</span> <span class="p">:-</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">britsh</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">red</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">spain</span><span class="p">,</span><span class="s-Atom">dog</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">japan</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">painter</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">italy</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">tea</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">norway</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">first</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">norway</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">right</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">white</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">green</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">snail</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">photographer</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">yellow</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">diplomat</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">middle</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">milk</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">green</span><span class="p">,</span><span class="s-Atom">cafe</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">neighbor</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="s-Atom">norway</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">blue</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">orange</span><span class="p">,</span><span class="s-Atom">violinst</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">neighbor</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">fox</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">doctor</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">neighbor</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">horse</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">diplomat</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">zebra</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">),</span>
+</span><span class='line'>    <span class="nf">house</span><span class="p">(</span><span class="nf">attr</span><span class="p">(</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="k">_</span><span class="p">,</span><span class="s-Atom">water</span><span class="p">,</span><span class="k">_</span><span class="p">),</span> <span class="nv">Houses</span><span class="p">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在事实部分，将房子看做一个整体，描述了房子在5所房子中、房子的左右关系、中间的房子处于什么位置、第一所房子处于什么位置、房子间的相邻关系以及每所房子拥有哪些属性。<br/>
+规则部分包含了对题目中提示的描述和最终问题的描述，这些定义是为了告诉逻辑引擎，在求值时必须满足这些条件。<br/>
+最终的查询为 all_houses(A) ，prolog 逻辑引擎将会查找出满足结果的房子数组，注意每所房子由它的属性组成，这样最后得到的结果为：</p>
+
+<p>[attr(britsh, horse, red, orange, violinst),   <br/>
+ attr(spain, dog, yellow, water, diplomat),   <br/>
+ attr(japan, fox, white, milk, painter),   <br/>
+ attr(norway, zebra, green, cafe, doctor),   <br/>
+ attr(italy, snail, blue, tea, photographer)] .</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我读《程序员的职业素养》]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/18/read-professional-programmers/"/>
+    <updated>2013-06-18T16:26:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/18/read-professional-programmers</id>
+    <content type="html"><![CDATA[<p>Bob 大叔的《代码整洁之道》一书，曾经让我受益匪浅，这本书从编码上很小的细节着手，讲解如何编写出高质量的代码。最近我又拜读了 Bob 大叔去年出的一本新书《程序员的职业素养》，这本书未深入讲解编程的知识细节，而是从程序员工作的角度描述哪些行为是不专业的、哪些行为可能会导致项目延期、哪些行为会导致工作效率低下等等事情，其中也有很多非常好的专业建议。</p>
+
+<p>提升职业素养，使自己成为一个专业的程序员，这并非一件简单的事情，技术能力、沟通技巧、工作态度等等都构成了评价一个员工专业性的因素，缺少任何一个可能都会令我们显得不够专业，如果能把书中的理论知识持之以恒地应用到工作之中，可以说对我们的职业生涯将大有裨益。</p>
+
+<p>我对书中的一些关键点做了一些摘要，以便自己可以经常回过头来看一看，思考自己是否有将理论和实践结合起来以及怎样才能做的更好。培根在《论读书》中说过，有的书可以请人代读，然后看他的笔记摘要就行了，但这只应限于不太重要的书，否则一本书将像被蒸馏过的水，变得淡而无味了。我下面列举的摘要，就像是蒸馏过的水一样，虽然读起来没什么味道，但是一些观点确实是引人深思的，希望对大家有所帮助。</p>
+
+<h3>第一章 - 专业主义</h3>
+
+<ol>
+<li>专业主义意味着担当责任</li>
+<li>不行损害之事<br/>
+不破坏软件功能，失误率不可能等于零，但专业的程序员有责任让它无线接近零；让QA找不出任何问题，发送明知有缺陷的代码，这种做法是极其不专业的，记住那些你没把握的代码都可以看做是有某种缺陷的，QA不是抓虫机器。自动化QA——单元测试和验收测试；不要破坏结构，<strong>无情重构</strong>和坚持代码设计原则。</li>
+<li>职业道德<br/>
+工作时间用来解决雇主的问题，而不是你自己的问题；了解工作领域；坚持学习。</li>
+<li>练习——软件开发技能和效率也可以通过训练来提高，可以坚持重复做一些简单的练习，这种练习可称作“卡塔”，卡塔的形式是一个有待解决的简单编程问题，做卡塔的目的不是找出解决方法，而是训练你的手指和大脑。</li>
+<li>合作<br/>
+一起编程、一起练习、一起设计、一起计划。</li>
+<li>辅导——教学相长。</li>
+<li>了解业务领域</li>
+<li>与雇主保持一致，站在雇主的角度来思考。</li>
+<li>谦逊<br/>
+对自己的能力充满自信，并因此勇于承担有把握的风险；清楚自己的自负。</li>
+</ol>
+
+
+<h3>第二章 - 说“不”</h3>
+
+<p>“能就是能，不能就是不能。不要说试试看。”</p>
+
+<ol>
+<li>对抗角色<br/>
+掌握沟通技巧，杜绝说“试试看”，交流应该保持明确性，当可能存在风险时，保持自己的立场。</li>
+<li>高风险时刻<br/>
+最需要说“不”的是那些高风险的关键时刻，把最明确的信息传递给上级。</li>
+<li>要有团队精神<br/>
+真正为团队努力的人，会根据自己最好的能力状况，明确说明哪些是做得到的事，哪些是做不到的事。</li>
+<li>说“是”的成本<br/>
+急于完成，必然要做出某些牺牲，比如代码质量。</li>
+</ol>
+
+
+<p>其他：有时候，提供太多细节，只会招致更多的微观管理</p>
+
+<h3>第三章 - 说“是”</h3>
+
+<ol>
+<li>承诺用语<br/>
+口头上说。心里认真。付诸行动。</li>
+<li>识别缺乏承诺的征兆<br/>
+话语中包含“需要/应当”、“希望/但愿”、“让我们”等词语时，很可能是缺乏承诺的征兆</li>
+<li>真正的承诺听起来是怎样的<br/>
+关键在于，你对自己将会做的某件事做了清晰的事实陈述，而且还明确说明了完成期限/时间。</li>
+<li>信守承诺将使你成为一名严谨负责的开发人员</li>
+<li>专业人士给出肯定回答时，会使用承诺用语，以确保各方能明白无误地理解承诺内容。</li>
+</ol>
+
+
+<h3>第四章 - 编码</h3>
+
+<ol>
+<li>做好准备<br/>
+代码要能正常工作、解决问题、跟现有系统结合、具有高的可读性。</li>
+<li>确保将睡眠、健康和生活方式调整到最佳状况，这样才能在工作中全力以赴，产生优秀的代码。</li>
+<li>流态区<br/>
+这是一种编码时会进入的一种意识高度专注但思维视野却会收拢到狭窄的状态，在这种状态下能够进行非常高效的代码编写，但它也有不利的一面，那就是思维视野收拢，此时可能无法估计到代码的全局层面。</li>
+<li>中断、阻塞<br/>
+中断会打断思维，而阻塞是一种无法思考的状态，结对编程可以从某些方面表面这些问题，同伴能在被中断之后恢复之前被打断的思维，同伴也能在你思维阻塞的时候重新激活你的思维。</li>
+<li>创造性输入<br/>
+广泛地阅读，学习各种各样的知识，能激活人的创造力和增加很多灵光一闪的机会。</li>
+<li>保持节奏<br/>
+要适当分配精力，不要一直困在解决问题的状态中，暂时从问题中脱离出来，有助于大脑以不同且更具创造性的方式搜寻解决方案。</li>
+<li>进度延迟<br/>
+根据目标定期衡量进度，使用三个考虑到多种因素的期限：乐观预估、标称预估、悲观预估。</li>
+<li>无法完成任务时，不要轻易让步，不要让其他人抱有期望，不要盲目冲刺，若要加班，一定要提供说明加班失败的后备方案。</li>
+<li>定义“完成”<br/>
+完成不是往源代码管理系统中提交已经写完的代码，团队应该对“完成”有一个清晰的定义，一般来讲，只有当代码完全通过验收测试，开发任务才算完成。</li>
+</ol>
+
+
+<h3>第五章 - 测试驱动开发</h3>
+
+<ol>
+<li>TDD的三项法则<br/>
+编好失败的单元测试之前，不编写产品代码；<br/>
+一个单元测试失败，就不再编写单元测试代码；<br/>
+产品代码刚好让失败的单元测试通过，不要多写。</li>
+<li>TDD的优势<br/>
+确定性——通过测试能让你更加确信代码能正常工作
+降低缺陷注入率</li>
+<li>敢于重构的勇气<br/>
+拥有一套值得信赖的测试，便可完全打消对修改代码的恐惧。</li>
+<li>文档<br/>
+遵循TDD的三项法则，所编写的每个单元测试都是一个示例，它们是最好的底层文档。</li>
+<li>设计<br/>
+为了编写测试，必须找出函数跟其他函数解耦的方法；
+事后写的测试只是一种防守，而现行编写的测试则是进攻，事后编写测试的作者已经受制于已有代码。</li>
+<li>TDD的局限<br/>
+即使有全面的测试，也有可能产生糟糕的代码，因为写出的测试代码可能就很糟糕，所以应当把测试代码当做产品代码一样认真对待。</li>
+</ol>
+
+
+<h3>第六章 - 练习</h3>
+
+<p>一句话总结：任何事情要想做得快，都离不开练习，重复编码过程，要求你迅速做出决定，熟练之后大脑可以放心思考更高层次的问题。</p>
+
+<h3>第七章 - 验收测试</h3>
+
+<ol>
+<li>验收测试定义为业务方与开发方合作编写的测试，目的在于确定需求已经完成。</li>
+<li>自动化<br/>
+验收测试应当自动进行，这可以节省不必要的成本。</li>
+<li>持续集成<br/>
+务必确保在持续集成系统中，单元测试和验收测试每天都能运行。
+保持持续集成系统的正常运行是非常重要的，集成一旦失败，应当立即处理。</li>
+</ol>
+
+
+<h3>第八章 - 测试策略</h3>
+
+<ol>
+<li>业务人员编写针对正常路径的测试（happy-pathtest），QA则编写针对极端情况（corner）、边界状态（boundary）和异常路径（unhappy-path）的测试。</li>
+<li>自动化测试金字塔<br/>
+使用测试驱动开发来产生单元测试；<br/>
+验收测试定义系统需求；<br/>
+持续集成保证质量稳步上升；<br/>
+系统测试确保正确的系统构造；<br/>
+人工探索式测试确保在人工操作下表现良好，同时富有创造性地找出尽可能多的“古怪之处”。</li>
+</ol>
+
+
+<h3>第九章 - 时间管理</h3>
+
+<ol>
+<li>关于会议的真理：会议是必须的；会议浪费了大量的时间。</li>
+<li>谨慎选择应当参加哪些会议，必要时礼貌拒绝。</li>
+<li>避免消耗注意力点数</li>
+<li>避免优先级错乱</li>
+</ol>
+
+
+<h3>第十章 - 预估</h3>
+
+<ol>
+<li>不同的人对预估有不同的看法<br/>
+很多时候，业务方觉得预估就是承诺，开发方认为预估就是猜测，两者相差迥异。</li>
+<li>预估是一种猜测，它不是定数，预估的结果是一种概率分布。</li>
+</ol>
+
+
+<h3>第十一章 - 压力</h3>
+
+<ol>
+<li>在压力下保持冷静的最好方式，便是规避会导致压力的处境，例如不要轻易承诺。</li>
+<li>“快速且脏乱”的抛弃型代码，是自相矛盾的说法，脏乱只会导致缓慢，让系统、代码和设计尽可能整洁，就可以避免压力。</li>
+<li>危机中的纪律<br/>
+如果你遵守的纪律原则是工作的最佳方式，那么即使处于危机之中，也应当坚决秉持这些纪律原则。<br/>
+如果你在危机中放弃TDD，那说明你并不真正相信TDD是有帮助的。</li>
+<li>应对压力<br/>
+不要惊慌失措；保持沟通；依靠纪律原则；寻求帮助。</li>
+</ol>
+
+
+<h3>第十二章 - 协作</h3>
+
+<ol>
+<li>程序员与人<br/>
+我们并非是因为喜欢和人们在一起工作才选择做程序员。整个群体的平均状况便是如此，我们，程序员们，还是最享受面无表情的沉思，沉浸于问题思考中。</li>
+<li>程序员与程序员<br/>
+不正常的团体最糟糕的症状是，每个程序员在自己的代码周边筑起一道高墙，拒绝让其他程序员接触到这些代码。这是招致灾难的“最佳秘诀”。</li>
+<li>结对<br/>
+结对工作是分享知识的最好途径，也是复查代码的最好方式，系统中不应该包含未经其他程序员复查过的代码。</li>
+</ol>
+
+
+<p>也许我们不是因为通过编程可以和人互相协作才选择从事这项工作，但真不走运，编程就意味着与人合作。</p>
+
+<h3>第十三章 - 团队与项目</h3>
+
+<ol>
+<li>成员克服个体差异，默契配合，彼此信任，才能形成真正有凝聚力的团队，当然这需要一个“发酵”的过程。</li>
+<li>专业的开发组织会把项目分配给已形成凝聚力的团队，而不会围绕着项目来组建团队。</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[《代码整洁之道》与 Python 之禅]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/07/clean-code-and-zen-of-python/"/>
+    <updated>2013-06-07T11:44:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/07/clean-code-and-zen-of-python</id>
+    <content type="html"><![CDATA[<p>Bob 大叔在《代码整洁之道》一书的前言打趣着说，当你写的代码在经受代码审查时，如果审查者愤怒的吼道“What the fuck is this shit?”或者“Dude, What the fuck?”等言辞激烈的词语时，那说明你写的是 Bad Code；如果审查者只是漫不经心的吐出几个“What the fuck?”，那说明你写的是 Good Code。这就是衡量代码质量的唯一标准——每分钟骂出“What the fuck?”的频率。</p>
+
+<p>想写出整洁的代码很难，有一部分原因在于糟糕的代码太容易编写。想快点完成任务时，考虑不周全时，忽略安全时，随意命名时，参数过多时，嵌套太深时，未及时更改注释时，违反法则时，重复你自己时等等情形，我们有太多的机会来制造糟糕的代码。只有严肃对待自己的代码，了解哪些事情会使我们的代码变味，才有可能写出整洁的代码。</p>
+
+<p>写代码和写文章在某种程度上有相似之处，好的文章一定有好的可读性，写代码也一样，只有优美干净的代码才能具有良好的可读性。编写具有可读性的代码不光是保持有意义的命名就行，如果你想成为一名更好的程序员，写代码时你需要注意的有很多，比如：</p>
+
+<ol>
+<li>规范本地变量的位置</li>
+<li>使函数尽量短小</li>
+<li>调用者尽可能放在被调用者上面</li>
+<li>保持代码拥有良好的格式</li>
+<li>编写只做一件事的函数</li>
+<li>函数参数不要超过三个</li>
+<li>暴露时序耦合</li>
+<li>使用异常代替返回错误码</li>
+</ol>
+
+
+<p>除此之外，你还须牢记众多设计原则，如：</p>
+
+<ol>
+<li>开放封闭原则（OCP）</li>
+<li>迪米特法则</li>
+<li>依赖倒置原则（DIP）</li>
+<li>单一职责原则（SRP）</li>
+<li>里氏替换原则（LSP）</li>
+<li>不要重复（DRY）</li>
+<li>你不会需要它（YAGNI）</li>
+</ol>
+
+
+<p>当然仅有这些是不够的，这不是骑自行车，学写整洁代码得花许多功夫，必须不断实践，从失败中提取代码的坏味道并从中得到启发。</p>
+
+<p>编写整洁代码，你需要牢记并遵守很多东西，但这并不是循规蹈矩和刻板，而是对简单之美、代码之美的追求。代码整洁之道，是编写优秀代码的一种方法，其核心是尽力使代码保持简单——Keep It Simple, Stupid。判断一个人写的代码的好坏，不是看它的代码写的有多复杂，而是看他有没有把复杂的事物抽象出来并用简单的方式去描述它，此外这个人对代码的态度也至关重要，大多数时候我们并不能从一开始就把代码写的很完美，当我们需要快速做出一个原型，或者一开始代码看起来不错，但新的需求使现有的设计无法满足，如果不对设计进行改动的话，那么代码就会变的丑陋，如果你热爱自己正在做的事情，崇尚代码之美，那么你就会有足够的动力去重构它、完善它，而不是破坏结构使代码腐烂。</p>
+
+<p>保持简单、追求简单，我想这就是编码之中的禅，一种回归本真的境界。这种禅意在 Python 的设计哲学中体现的淋漓尽致，在 Python 解释器中输入“import this”，便会出现经典的 Python 之禅。</p>
+
+<ul>
+<li>Beautiful is better than ugly. <br/>
+优美胜于丑陋。</li>
+<li>Explicit is better than implicit.<br/>
+显式胜于隐式。</li>
+<li>Simple is better than complex.<br/>
+简单胜于复杂。</li>
+<li>Complex is better than complicated.<br/>
+复杂胜于难懂。</li>
+<li>Flat is better than nested.<br/>
+扁平胜于嵌套。</li>
+<li>Sparse is better than dense.<br/>
+分散胜于密集。</li>
+<li>Readability counts.<br/>
+可读性应当被重视。</li>
+<li>Special cases aren&#8217;t special enough to break the rules. Although practicality beats purity.<br/>
+尽管实用性会打败纯粹性，特例也不能凌驾于规则之上。</li>
+<li>Errors should never pass silently. Unless explicitly silenced.<br/>
+除非明确地使其沉默，错误永远不应该默默地溜走。</li>
+<li>In the face of ambiguity, refuse the temptation to guess.<br/>
+面对不明确的定义，拒绝猜测的诱惑。</li>
+<li>There should be one&#8211; and preferably only one &#8211;obvious way to do it.<br/>
+用一种方法，最好只有一种方法来做一件事。</li>
+<li>Although that way way not be obvious at first unless you&#8217;re Dutch.<br/>
+虽然一开始这种方法并不是显而易见的，但谁叫你不是Python之父呢。</li>
+<li>Now is better than never. Although never is often better than <em>right</em> now.<br/>
+做比不做好，但立马去做有时还不如不做。</li>
+<li>If the implementation is hard to explain, it&#8217;s a bad idea.<br/>
+如果实现很难说明，那它是个坏想法。</li>
+<li>If the implementation is easy to explain, it may be a good idea.<br/>
+如果实现容易解释，那它有可能是个好想法。</li>
+<li>Namespaces are one honking great idea &#8211; let&#8217;s do more of those!<br/>
+命名空间是个绝妙的想法，让我们多多地使用它们吧！</li>
+</ul>
+
+
+<p>道着重于方法，禅着重于态度，让我们把这两者相结合，做一个有追求的程序员，为成为软件匠人而奋斗吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[七周七语言之用Io编写领域特定语言]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/06/05/sevenlang-io/"/>
+    <updated>2013-06-05T05:56:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/06/05/sevenlang-io</id>
+    <content type="html"><![CDATA[<p>Io 语言是在2002年创造出来的，虽然距今已经有11个年头了，但是对于一门编程语言来说，它还只能算是一门年轻的语言。Io 并不是主流编程语言，没有什么名气，就连名字取的也并不适合推广，io 有太多其他的含义了，用google直接搜索 io 的话，很难找到关于这门编程语言的资料，英文推荐搜索“io language”，中文则建议搜索“io 编程语言”。</p>
+
+<h2>Io 的优缺点</h2>
+
+<p>Io 是个小众语言，文档不足，这是其中的一个缺点，但是这门语言吸收了许多语言的特点，具有很高的学习价值。Io 的设计借鉴了 SmallTalk、Self、NewtonScript、Act1、LISP和 Lua 的一些特点，它是一门基于原型式设计的编程语言，具有面向对象特性，语法概念极少，它没有关键字，所以能够在很短的时间内熟悉语法，Io 还有出色的并发库，利用它能够以简单直观的方式编写并发程序。</p>
+
+<p>Io 有很少的语法规则和语言特性，这似乎在某种程度上束缚了它的能力，但是使用 Io 可以很容易地扩展这门语言自身的语法，我们可以自定义运算符或改变运算符的行为，也可以使用元编程在任何时候改变任何对象的行为。正是这些高扩展性和可定制性使得 Io 在创造<strong>领域特定语言</strong>（Domain Specific Language，简称DSL）方面具有非常强大的能力，我们可以利用它创造出自己喜欢的语法，编写出<strong>能够编写程序的程序</strong>，学习 Io 颇具启发性，怎样利用 Io 打造出能够提高编程效率的 DSL 更是一个值得深入研究的课题。</p>
+
+<h2>什么是领域特定语言？</h2>
+
+<p>Martin Flower 在《领域特定语言》一书中给出的定义是：针对某一特定语言，具有受限表达性的一种计算机程序设计语言。DSL 不是图灵完备的，所以它的表达能力有限；由于它是领域特定的，它的出现往往是为了消除业务领域的复杂性，所以 DSL 一般是整洁的、易于使用且接近自然语言的。我们平时在编码的过程中其实会接触到很多领域特定语言，比如 CSS、HTML、XML、JSON、正则表达式、XAML，他们都是针对某一领域的，“求专不求全”，CSS用于定义Web页面样式；HTML用于定义Web界面元素；XML、JSON用于描述数据，这些数据可以作为纯数据，也可作为某种行为的配置。</p>
+
+<p>DSL 从实现角度分为内部DSL和外部DSL，用XML来描述某种行为就是一种常见的外部DSL的形式，利用编程语言自带的语法结构定义出来的 DSL 称为内部DSL，比如时下流行的流畅接口（Fluent Interface）编码方式就是一种内部DSL。上面说到 Io 编程语言可以自定义运算符且具有元编程特性，因此 Io 可以方便的创造出内部DSL，下面我们就通过几个示例来看一看 Io 在这方面的能力。</p>
+
+<h2>使用 Io 创造内部DSL</h2>
+
+<p>先看一个比较简单的例子，可以说在所有的编程语言中都有列表和字典（一些语言中也称为映射）这两种数据结构，在 io 中也不例外，io 中创建列表对象可以使用 list 函数，比如 foo := list(1,2) ，这很方便，然而创建一个字典的写法却比较繁琐，你需要 clone 一个 Map 对象，然后依次调用 atPut 方法向其中添加键值对，作为一个常用的数据结构，这样写不仅会影响效率而且会使代码变的臃肿，纵观其他编程语言，大部分都有相应的字典初始化语法糖，常用的写法为 {&#8220;key&#8221;:&#8221;value&#8221;} 结构，下面我们就在 io 中来创造这种语法糖。</p>
+
+<figure class='code'><figcaption><span>dict.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">OperatorTable</span> <span class="n">addAssignOperator</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;atPutNumber&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Map</span> <span class="n">atPutNumber</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>  <span class="nb">self</span> <span class="n">atPut</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">evalArgAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">asMutable</span> <span class="n">removePrefix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span> <span class="n">removeSuffix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">evalArgAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">curlyBrackets</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>  <span class="n">data</span> <span class="p">:</span><span class="o">=</span> <span class="no">Map</span> <span class="nb">clone</span>
+</span><span class='line'>  <span class="n">call</span> <span class="n">message</span> <span class="n">arguments</span> <span class="n">foreach</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">data</span> <span class="n">doMessage</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">data</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">squareBrackets</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">message</span> <span class="n">arguments</span> <span class="n">foreach</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">arr</span> <span class="n">push</span><span class="p">(</span><span class="n">call</span> <span class="n">sender</span> <span class="n">doMessage</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>    <span class="n">arr</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">doFile</span><span class="p">(</span><span class="s2">&quot;dict_sample.io&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>先简单说明一下上面这段代码，OperatorTable 中保存了可用的操作符号表，我们可以使用 addAssignOperator 方法向其中添加用于赋值的操作符号，并将其映射到第二个参数所指定的方法中，第一行代码的意思为将 : 符号映射到 atPutNumber 方法中，当在代码中碰到 <strong>:</strong> 符号时，将调用 <strong>atPutNumber</strong> 方法；<strong>curlyBrackets</strong>、<strong>squareBrackets</strong> 为 io 中的特殊变量，将方法赋值给它们相当于改变 {} 和 [] 符号的行为，在我们的代码中，指定了当碰到 { 符号时初始化 Map 对象，接着循环处理参数，这里的参数是用 , 符号分段的，data doMessage 方法相当于以data为上下文执行参数中的代码，参数代码中若碰到 : 符号则会调用 atPutNumber 方法，将符号左边的参数当作键，右边的参数当作值存入data中，最后返回data。</p>
+
+<p>注意，最后一行的 <strong>doFile</strong> 方法是执行另一文件中的代码的意思，为什么这个例子要分成两个文件呢？主要是因为虽然我们在操作符号表里面添加了一个符号，但是在这个文件的执行上下文中，是不会起效果的，只有调用 doString 或 doFile 才会起效，所以将创建字典的代码放在了下面这个文件中。</p>
+
+<figure class='code'><figcaption><span>dict_sample.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">dict</span> <span class="p">:</span><span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lcomplete&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;array&quot;</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;hello&quot;</span> <span class="p">:</span> <span class="s2">&quot;io&quot;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很简洁吧，而且还支持嵌套定义哦。</p>
+
+<p>通过第一个例子，相信各位已经能看出 io 在创造内部dsl上的灵活性了，接下来我们看一个更强大的例子，使用 io 让编写html变的更有禅意，何谓禅意，其实是受到 Sublime 上的 ZenCode 插件的启发，使用 ZenCode 语法可以快速的编写 html 片段。这次我们先看一下使用 dsl 的方式。</p>
+
+<figure class='code'><figcaption><span>enhance_html.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">zencode</span><span class="p">(</span><span class="no">Html</span> <span class="n">html</span><span class="o">&gt;</span><span class="n">head</span><span class="o">+</span><span class="n">body</span><span class="o">&gt;</span><span class="n">div!content</span><span class="vg">$id</span><span class="vi">@class</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不难发现，这个语法已经跟宿主语言几乎没有任何关系，是一门彻底的内部dsl，上面这段代码生成的 html 如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很强大吧，一行代码就可以生成出这么多的 html，现在我们再看看这个 dsl 是如何定义出来的。</p>
+
+<figure class='code'><figcaption><span>zencode.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">forward</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">message</span> <span class="nb">name</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">root</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Object</span> <span class="nb">clone</span> <span class="k">do</span><span class="p">(</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">@</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">classname</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">attrs</span> <span class="n">append</span><span class="p">(</span><span class="s2">&quot; class=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">classname</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="n">interpolate</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">$</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">attrs</span> <span class="n">append</span><span class="p">(</span><span class="s2">&quot; id=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="n">interpolate</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&gt;</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="n">tag</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">parent</span> <span class="p">:</span><span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">+</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nb">self</span> <span class="n">parent</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">html</span> <span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>            <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="n">tag</span>
+</span><span class='line'>            <span class="nb">self</span> <span class="n">parent</span> <span class="n">childs</span> <span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">*</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">count</span><span class="p">,</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">count</span> <span class="p">:</span><span class="o">=</span> <span class="n">count</span> <span class="n">asNumber</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">!</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">content</span><span class="p">,</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">content</span> <span class="p">:</span><span class="o">=</span> <span class="n">content</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">forward</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>        <span class="nb">name</span> <span class="p">:</span><span class="o">=</span> <span class="n">call</span> <span class="n">message</span> <span class="nb">name</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>        <span class="n">root</span> <span class="o">=</span> <span class="n">html</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">init</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">attrs</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">count</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">parent</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">content</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="n">flush</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">root</span> <span class="n">render</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="n">render</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="n">count</span> <span class="n">repeat</span><span class="p">(</span>
+</span><span class='line'>        <span class="n">writeln</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span><span class="nb">self</span> <span class="n">tag</span><span class="p">,</span><span class="nb">self</span> <span class="n">attrs</span> <span class="n">join</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">childIndent</span> <span class="p">:</span><span class="o">=</span> <span class="n">indent</span> <span class="o">.</span><span class="n">.</span> <span class="s2">&quot;  &quot;</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nb">self</span> <span class="n">content</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">writeln</span><span class="p">(</span><span class="n">childIndent</span><span class="p">,</span><span class="nb">self</span> <span class="n">content</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="n">foreach</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">arg</span> <span class="n">render</span><span class="p">(</span><span class="n">childIndent</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="n">writeln</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="s2">&quot;&lt;/&quot;</span><span class="p">,</span><span class="nb">self</span> <span class="n">tag</span><span class="p">,</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">zencode</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">html</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">html</span> <span class="n">flush</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">doFile</span><span class="p">(</span><span class="s2">&quot;enhance_html.io&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有几处需要说明一下，forward 是一个特殊方法，相当于 ruby 中的 method_missing ，当调用的方法不存在时，系统将会把调用转向到 forward 方法，这就给了我们很大的灵活性，我们无需定义 html、head 等方法，这些未定义的方法会自动转向到 forward 中处理；注意，一共有两个 forward 方法，分别应用在 Object 和 Html 对象上，只有 Html html 会返回 Html 对象，其他的未定义方法会转向到 Object 的 forward 方法上，这里直接将方法名作为字符串返回，新添加的 @、$ 等操作符，将会把接受到的字符串进行处理，最后再返回一个 Html 对象以进行链式调用。</p>
+
+<h2>总结</h2>
+
+<p>在 Io 中可以轻松地定义操作符、实现动态方法或更改所有对象的行为，这些能力是强大的，也是危险的，使用之前需要仔细衡量。当然，如果只是用它来做某一件事情，比如用来编写上面的 ZenCode 时，那么可以大胆发挥自己的想象力，在它的基础上构建一门属于自己的语言。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[在windows下通过cygwin使用octopress]]></title>
     <link href="http://lcomplete.github.io/blog/2013/06/01/use-octopress-in-cygwin/"/>
     <updated>2013-06-01T16:50:00+08:00</updated>
     <id>http://lcomplete.github.io/blog/2013/06/01/use-octopress-in-cygwin</id>
-    <content type="html"><![CDATA[<p>在windows下使用git和octopress还真是个麻烦事，本文记录了在windows下利用cygwin安装git和使用octopress的过程，希望对大家有所帮助。</p>
+    <content type="html"><![CDATA[<p>在windows下使用git和octopress还真是个麻烦事，本文记录了在windows下通过cygwin安装git和使用octopress的过程，希望对大家有所帮助。</p>
+
+<h2>准备工作</h2>
+
+<ol>
+<li>下载 <a href="http://cygwin.com/install.html">cygwin</a></li>
+<li>下载 <a href="http://rubyinstaller.org/downloads/">ruby 1.9.3</a>
+注：需要使用RubyInstall的方式进行安装，可在该下载页面可找到1.9.3的版本，Octopress依赖ruby1.9.3版本，其他版本可能会出现兼容性问题。</li>
+<li>下载 <a href="http://rubyinstaller.org/downloads/">DevKit</a></li>
+</ol>
+
+
+<h2>安装cygwin</h2>
+
+<p>安装cygwin时，默认是不安装git的，因此需要在安装时选中git，如下图所示：
+<img src="http://lcomplete.github.io/assets/blog/20130603/cygwin_git.jpg" alt="cygwin中安装git" />
+另，在使用github时，需要提供ssh key，所以在安装时也需选中openssh包。</p>
+
+<h2>安装ruby和DevKit</h2>
+
+<p>安装ruby时，记得选中“Add Ruby executables to your PATH”，将ruby的执行路径添加到环境变量中，安装完后接着安装DevKit。<br/>
+注意，安装DevKit这一步是必需的，因为若不安装的话，后面安装其他依赖时会出错，首先解压下载下来的DevKit包，在解压的文件夹下打开命令行执行以下命令即可完成安装。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ruby dk.rb init
+</span><span class='line'>ruby dk.rb install</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>获取octopress并安装相关依赖</h2>
+
+<p>首先从github上获取octopress源代码，不知道如何使用github的可以参考 <a href="http://blog.fwhyy.com/posts/1709">Windows 下使用Git管理Github项目</a> 这篇文章。
+若没有自己的分支可clone主干版本。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone https://github.com/imathis/octopress.git octopress
+</span><span class='line'>cd octopress</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在cygwin中使用gem等命令时，会出现找不到路径的错误，此时可以使用gem.bat命令，但每次写.bat着实是件麻烦事，可通过在.bash_profile中设置别名来解决这个问题。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias gem=gem.bat
+</span><span class='line'>alias irb=irb.bat
+</span><span class='line'>alias rake=rake.bat</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装其他依赖</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install fast-stemmer
+</span><span class='line'>gem install bundler
+</span><span class='line'>bundle install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>fast-stemmer是执行bundle install时所需的一个依赖项，若不安装的话则bundle install命令执行到大半时会失败，这个时候需要根据提示安装其他依赖项，再重复这个步骤，若出错再重复，在天朝这么坑爹的网络环境下，有时又会出现无法下载的情况，真是好不折腾。若使用goagent，在无法下载时，可设置shell通过代理上网，命令如下。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export proxy=127.0.0.1:8087</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用octopress</h2>
+
+<p>安装octopress主题</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在本地进行预览</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在windows下使用octopress，会有一些中文编码方面的问题，还需要做一些设置。<br/>
+在.bashrc中添加下面的键值对</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>LANG=zh_CN.UTF-8 
+</span><span class='line'>LC_ALL=zh_CN.UTF-8</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在ruby安装路径下找到lib\ruby\gems\1.9.1\gems\jekyll-0.12.0\lib\jekyll\convertible.rb这个文件，查找File.read，将该行代码修改为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">name</span><span class="p">),</span> <span class="ss">:encoding</span> <span class="o">=&gt;</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还有其他2个rb文件需要采用同样的方式进行修改，当在命令执行出错时可查看trace，并找到相关的文件进行修改。</p>
+
+<p>关于如何使用octopress在github上搭建blog，你可以查看 <a href="http://ishalou.com/blog/2012/10/15/how-to-use-octopress/">使用Octopress + Github管理blog</a> 这篇文章。</p>
+
+<h2>总结</h2>
+
+<p>在windows下使用为linux而生的git和为hacker而生的octopress，确实没有在ubuntu下那么方便，不过还好这些工具都是开源的，在碰到问题的时候，可以自行修改代码来解决，这确实体现了开源的优越性。昨天也在mac下搭建了octopress的blog编写环境，由于我的mac系统版本自带的ruby是1.8.7版本，需要通过rvm来安装1.9.3版本，安装的时候也折腾了一番，对比一下，发现还是在ubuntu下使用octopress最为便捷。</p>
 ]]></content>
   </entry>
   
@@ -131,7 +1022,7 @@
 </span><span class='line'>    <span class="kp">attr_accessor</span> <span class="ss">:base_uri</span><span class="p">,</span> <span class="ss">:cur_page</span> <span class="c1"># 定义属性访问器</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">pagesize</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@base_uri</span> <span class="o">=</span> <span class="s1">&#39;http://jandan.net/pic&#39;</span> <span class="c1"># @表示实例变量、@@表示类变量、$表示局部变量</span>
+</span><span class='line'>        <span class="vi">@base_uri</span> <span class="o">=</span> <span class="s1">&#39;http://jandan.net/pic&#39;</span> <span class="c1"># @表示实例变量、@@表示类变量、$表示全局变量</span>
 </span><span class='line'>        <span class="vi">@dir</span> <span class="o">=</span> <span class="s1">&#39;/media/Develop/MyCode/SevenLang/ruby/pic&#39;</span>
 </span><span class='line'>        <span class="vi">@pagesize</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span><span class="n">pagesize</span><span class="p">)</span> <span class="c1"># 整型转换</span>
 </span><span class='line'>    <span class="k">end</span>

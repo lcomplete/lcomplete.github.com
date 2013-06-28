@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | lcomplete's Blog]]></title>
   <link href="http://lcomplete.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lcomplete.github.io/"/>
-  <updated>2013-06-02T03:01:54+08:00</updated>
+  <updated>2013-06-29T02:02:15+08:00</updated>
   <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
@@ -48,7 +48,7 @@ require 'nokogiri' # 用于解析html的模块</p>
 <pre><code>attr_accessor :base_uri, :cur_page # 定义属性访问器
 
 def initialize(pagesize)
-    @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示局部变量
+    @base_uri = 'http://jandan.net/pic' # @表示实例变量、@@表示类变量、$表示全局变量
     @dir = '/media/Develop/MyCode/SevenLang/ruby/pic'
     @pagesize = Integer(pagesize) # 整型转换
 end
