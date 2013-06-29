@@ -106,8 +106,8 @@ all_houses(Houses) :-
 规则部分包含了对题目中提示的描述和最终问题的描述，这些定义是为了告诉逻辑引擎，在求值时必须满足这些条件。  
 最终的查询为 all_houses(A) ，prolog 逻辑引擎将会查找出满足结果的房子数组，注意每所房子由它的属性组成，这样最后得到的结果为：
 
-[attr(britsh, horse, red, orange, violinst),     
- attr(spain, dog, yellow, water, diplomat),     
- attr(japan, fox, white, milk, painter),     
- attr(norway, zebra, green, cafe, doctor),     
- attr(italy, snail, blue, tea, photographer)] .
+[attr(norway, fox, yellow, water, diplomat),    
+attr(italy, horse, blue, tea, doctor),    
+attr(britsh, snail, red, milk, photographer),    
+attr(spain, dog, white, orange, violinst),    
+attr(japan, zebra, green, cafe, painter)] .
