@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用 C# 编写简易 ASP.NET Web 服务器 - lcomplete's Blog</title>
+  <meta name="author" content="lcomplete">
+
+  
+  <meta name="description" content="你是否有过这样的需求——想运行 ASP.NET 程序，又不想安装 IIS 或者 Visual Studio？我想如果你经常编写 ASP.NET 程序的话，应该或多或少都会碰到这种情况。除了使用 IIS 和 VS，我们还有哪些方式可以运行 ASP.NET 程序呢，自己写一个支持 ASP.NET 的 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lcomplete.github.io/blog/2013/07/16/use-csharp-write-aspnet-web-server">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="lcomplete's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">lcomplete's Blog</a></h1>
+  
+    <h2>一个带着极客精神正努力成为黑客的程序员</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lcomplete.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用 C# 编写简易 ASP.NET Web 服务器</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-16T05:44:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>你是否有过这样的需求——想运行 ASP.NET 程序，又不想安装 IIS 或者 Visual Studio？我想如果你经常编写 ASP.NET 程序的话，应该或多或少都会碰到这种情况。除了使用 IIS 和 VS，我们还有哪些方式可以运行 ASP.NET 程序呢，自己写一个支持 ASP.NET 的 Web 服务器怎么样？NO NO NO，如果你只是想找个这样的工具的话，那完全没必要，我们知道使用 VS 可以运行 ASP.NET 程序，那么我们就可以找出 VS 所调用的程序，将其拷贝到没有 VS 和 IIS 的环境中运行，就能运行 ASP.NET 程序了，安装了 VS 的朋友可以到 C:\Program Files\Common Files\Microsoft Shared\DevServer\ 这个目录里面找找看，这个程序的使用方式如下。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>WebDev.WebServer.EXE /port:80 /path:"c:\mysite" /vpath:"/"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>怎么样？不错吧，轻而易举地就解决了文章开头所说的问题了。当然这并不是本篇文章的重点，如果你不满足于只知道这个用法，那可以继续往下阅读，接下来，我们将使用 C# 编写一个支持 ASP.NET 的 Web 服务器，看看这一切究竟是如何运作的。</p>
+
+<p>C# 中有着许多丰富的类库，使用不同的类库，我们可以站在不同的抽象层级去编写一个 Web 服务器，比如在 System.Net 命名空间下提供了一个 HttpListener 类，使用这个类，我们可以很容易地创建一个简单的 Web 服务器，但是这个类隐藏了很多实现的细节，为了避免知其然不知其所以然，我们将使用网络框架最底层的 Socket 类来编写这个程序。</p>
+
+<h2>预备知识</h2>
+
+<p>正式编写这个程序之前，让我们先来了解一些基础知识。编写一个 Web Server，必需要了解 HTTP 协议，它是万维网的基础，位于 TCP/IP 协议栈的应用层。</p>
+
+<ol>
+<li><p>HTTP 协议</p>
+
+<p>HTTP 协议是一个基于请求与响应模式、无状态的应用层协议，HTTP 请求主要包括三部分：请求行、请求报头、请求正文，下面是一个请求示例。</p>
+
+<pre><code>GET /lcomplete/AspNetServer HTTP/1.1 
+Host: github.com
+Connection: keep-alive
+Cache-Control: max-age=0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36
+
+postdata #可选的消息体
+</code></pre>
+
+<p>第一行是请求行，该行又分为3个部分，分别是动作、URI 和 HTTP 协议版本，后面的 {key}: {value} 格式的行为报头，如果请求为 post 动作的话，则报头后面的post数据为请求正文，需要注意报头和请求正文之间必需以<CR><LF>（回车+换行）分割。</p>
+
+<p>Web 服务器接收到一个请求后，就会将请求解析成上面3个部分，并开始处理应答，响应也由3个部分组成：状态行、响应报头、响应正文，响应报头和正文同样使用<CR><LF>进行分割，状态行为HTTP协议版本、状态码、状态描述组成，响应报头与请求报头格式相同，只不过请求报头由服务器解释并处理，响应报头由浏览器解释并处理，最后的响应正文便是我们所熟悉的 HTML。</p>
+
+<p>了解了 HTTP 协议的基础知识后，我们可以很容易地构建出一个支持静态文件的 HTTP 服务器，但是如何处理 ASP.NET 动态内容呢，这就要求我们熟悉 ASP.NET 的 HTTP 架构、管道机制、应用程序生命周期和宿主环境。</p></li>
+<li><p>ASP.NET 运行时机制</p>
+
+<p> ASP.NET 被特意设计成避免依赖 IIS，它的底层架构采用了管道机制，管道由一系列处理 HTTP 消息的对象组成，每个 HTTP 请求都要经过这些对象，每个对象都执行一些自己职责之内的任务。</p>
+
+<p> HttpRuntime 类是管道的入口，它负责开始处理请求，管理首先执行 HttpRuntime 类上的静态方法 ProcessRequest ，这个方法接收一个 HttpWorkerRequest 对象参数，该对象包含了当前请求的相关信息，HttpRuntime 类使用这个请求信息构建 HttpContext 对象，其中包含了 HttpRequest 和 HttpResponse 属性，然后根据上下文获取 HttpApplication 对象，之后请求交给 HttpApplication 对象进行处理。</p>
+
+<p> 处理请求时，HttpApplication 会执行一系列任务，其中包括为请求调用合适的 IHttpHandler 类的 ProcessRequest 方法，例如，如果请求针对某页，则使用该页的实例处理该请求，另外 HttpApplication 中还维护了 IHttpModule 对象列表，它可以在页面实例处理请求前后进行一些额外的工作。</p>
+
+<p> 管道机制是完全自主的，不需要依附于 IIS 上，不过管道并没有接收 HTTP 请求的能力，我们需要自己编写这部分代码，当收到请求时，创建 HttpWorkerRequest 对象并提供给 HttpRuntime.ProcessRequest 方法调用以启动管道。</p>
+
+<p> 要处理 ASP.NET 请求，还需要创建一个应用程序域以托管 HTTP 管道，我们可以使用 ApplicationHost.CreateApplicationHost 方法创建应用程序域，该方法接收3个参数：宿主类型、虚拟路径和物理路径，宿主类型需要跨域应用程序边界，所以需要继承自 MarshalByRefObject 类，并提供与其交互的方法，例如至少要提供一个方法使得可以提交 ASP.NET 请求以进行处理。</p>
+
+<p> 了解了 ASP.NET 的运行机制后，再来看看编写 ASP.NET 服务器需要使用到哪些类，首先我们需要使用 <strong>ApplicationHost</strong> 创建应用程序域以获得处理 ASP.NET 请求的能力，接收到请求后构造 <strong>HttpWorkerRequest</strong> （该类是抽象类，需要定义它的子类）对象，交由 <strong>HttpRuntime</strong> 类进行处理，接下来的事情就由 HTTP 管道处理了。</p>
+
+<p> 好了，预备知识已经讲解完毕，下面让我们进入编码实战。</p></li>
+</ol>
+
+
+<h2>编码实战</h2>
+
+<p>还记得文章开头的命令吗？运行一个网站需要提供3个必要的东西，端口、网站物理路径、网站虚拟路径，在程序开始运行时需要得到这3个参数。</p>
+
+<figure class='code'><figcaption><span>Program.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">port</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">dir</span> <span class="p">=</span> <span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Length</span><span class="p">==</span><span class="m">0</span> <span class="p">||</span> <span class="p">!</span><span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="m">0</span><span class="p">],</span><span class="k">out</span> <span class="n">port</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">port</span> <span class="p">=</span> <span class="m">45758</span><span class="p">;</span> <span class="c1">//端口</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">InitHostFile</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">SimpleHost</span> <span class="n">host</span><span class="p">=</span> <span class="p">(</span><span class="n">SimpleHost</span><span class="p">)</span> <span class="n">ApplicationHost</span><span class="p">.</span><span class="n">CreateApplicationHost</span><span class="p">(</span><span class="k">typeof</span> <span class="p">(</span><span class="n">SimpleHost</span><span class="p">),</span> <span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">host</span><span class="p">.</span><span class="n">Config</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span> <span class="c1">//配置虚拟路径和物理路径</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">WebServer</span> <span class="n">server</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebServer</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">server</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//需要拷贝执行文件 才能创建ASP.NET应用程序域</span>
+</span><span class='line'><span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">InitHostFile</span><span class="p">(</span><span class="kt">string</span> <span class="n">dir</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">path</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="s">&quot;bin&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(!</span><span class="n">Directory</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">Directory</span><span class="p">.</span><span class="n">CreateDirectory</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">source</span> <span class="p">=</span> <span class="n">Assembly</span><span class="p">.</span><span class="n">GetExecutingAssembly</span><span class="p">().</span><span class="n">Location</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">target</span> <span class="p">=</span> <span class="n">path</span> <span class="p">+</span> <span class="s">&quot;/&quot;</span> <span class="p">+</span> <span class="n">Assembly</span><span class="p">.</span><span class="n">GetExecutingAssembly</span><span class="p">().</span><span class="n">GetName</span><span class="p">().</span><span class="n">Name</span> <span class="p">+</span> <span class="s">&quot;.exe&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">File</span><span class="p">.</span><span class="n">Delete</span><span class="p">(</span><span class="n">target</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">File</span><span class="p">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了便于测试，我将这3个参数都写死了，端口默认使用45758，物理路径使用当前程序所在目录，虚拟路径使用根目录，这两个路径信息保存在 host 对象中。由于 Application.CreateApplicationHost 方法期望在 GAC 或指定的物理路径中的 bin 目录中找到宿主类型所在的程序集，所以在创建应用程序域之前先将当前程序拷贝到了物理路径的 bin 目录中，创建完应用程序域后初始化 WebServer 对象，调用该对象的 Start 方法以启动服务器。在 WebServer 中保留了 host 的引用，当处理 ASP.NET 请求时会使用到，我们先看一下启动服务器的方法。</p>
+
+<figure class='code'><figcaption><span>WebServer.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">Start</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_serverSocket</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="p">(</span><span class="n">AddressFamily</span><span class="p">.</span><span class="n">InterNetwork</span><span class="p">,</span> <span class="n">SocketType</span><span class="p">.</span><span class="n">Stream</span><span class="p">,</span> <span class="n">ProtocolType</span><span class="p">.</span><span class="n">Tcp</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_serverSocket</span><span class="p">.</span><span class="n">ExclusiveAddressUse</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_serverSocket</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="k">new</span> <span class="n">IPEndPoint</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">Port</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">_serverSocket</span><span class="p">.</span><span class="n">Listen</span><span class="p">(</span><span class="m">1000</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">IsRuning</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Serving HTTP on 0.0.0.0 port &quot;</span> <span class="p">+</span> <span class="n">Port</span> <span class="p">+</span> <span class="s">&quot; ...&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">OnStart</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">OnStart</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">IsRuning</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">try</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">Socket</span> <span class="n">socket</span> <span class="p">=</span> <span class="n">_serverSocket</span><span class="p">.</span><span class="n">Accept</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">ThreadPool</span><span class="p">.</span><span class="n">QueueUserWorkItem</span><span class="p">(</span><span class="n">AcceptSocket</span><span class="p">,</span> <span class="n">socket</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">100</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">AcceptSocket</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">IsRuning</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Socket</span> <span class="n">socket</span> <span class="p">=</span> <span class="n">state</span> <span class="k">as</span> <span class="n">Socket</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">HttpProcessor</span> <span class="n">processor</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpProcessor</span><span class="p">(</span><span class="n">_host</span><span class="p">,</span> <span class="n">socket</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">processor</span><span class="p">.</span><span class="n">ProcessRequest</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 Start 方法中，创建了一个全局的 socket 对象，使其监听指定端口，并新开了一个线程用于处理客户端请求，当接收到客户端请求后，将其交给 HttpProcessor 对象处理。</p>
+
+<figure class='code'><figcaption><span>HttpProcessor.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">ProcessRequest</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">try</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">RequestInfo</span> <span class="n">requestInfo</span> <span class="p">=</span> <span class="n">ParseRequest</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">requestInfo</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">string</span> <span class="n">staticContentType</span> <span class="p">=</span> <span class="n">GetStaticContentType</span><span class="p">(</span><span class="n">requestInfo</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">staticContentType</span><span class="p">))</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">WriteFileResponse</span><span class="p">(</span><span class="n">requestInfo</span><span class="p">.</span><span class="n">FilePath</span><span class="p">,</span> <span class="n">staticContentType</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">requestInfo</span><span class="p">.</span><span class="n">FilePath</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">))</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">WriteDirResponse</span><span class="p">(</span><span class="n">requestInfo</span><span class="p">.</span><span class="n">FilePath</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">_host</span><span class="p">.</span><span class="n">ProcessRequest</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">requestInfo</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SendErrorResponse</span><span class="p">(</span><span class="m">400</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">finally</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Close</span><span class="p">();</span><span class="c1">//确保连接关闭</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>处理的步骤如下：</p>
+
+<ol>
+<li>解析请求数据，从建立的 socket 连接处获取请求数据，将其解析为RequestInfo对象。</li>
+<li>判断请求是否有效，无效则响应 400 错误，有效则进行下一步处理。</li>
+<li>判断请求的是否为静态内容，是则输出文件响应。</li>
+<li>判断请求是否为目录，是则输出目录下的子文件夹和文件的链接，与 IIS 目录服务类似。</li>
+<li>不为静态内容和目录时，则交给 host 对象处理（使用ASP.NET HTTP 运行时进行处理）。</li>
+<li>处理完后确保连接关闭。</li>
+</ol>
+
+
+<p>其中输出响应是构造状态行、响应报头和响应正文，接着通过 socket 发送给客户端的过程。相信看到这里，大家已经对整个交互过程有了一个了解，剩下的最后一个问题就是如何处理动态内容。</p>
+
+<p>为了与 ASP.NET 的应用程序域交互，我们需要将请求信息提交给宿主对象 host 进行处理，下面是我们实现的宿主类。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SimpleHost</span> <span class="p">:</span> <span class="n">MarshalByRefObject</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">PhysicalDir</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">private</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">VituralDir</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">private</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Config</span><span class="p">(</span><span class="kt">string</span> <span class="n">vitrualDir</span><span class="p">,</span> <span class="kt">string</span> <span class="n">physicalDir</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">VituralDir</span> <span class="p">=</span> <span class="n">vitrualDir</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">PhysicalDir</span> <span class="p">=</span> <span class="n">physicalDir</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">ProcessRequest</span><span class="p">(</span><span class="n">HttpProcessor</span> <span class="n">processor</span><span class="p">,</span> <span class="n">RequestInfo</span> <span class="n">requestInfo</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">WorkerRequest</span> <span class="n">workerRequest</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WorkerRequest</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">processor</span><span class="p">,</span> <span class="n">requestInfo</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">HttpRuntime</span><span class="p">.</span><span class="n">ProcessRequest</span><span class="p">(</span><span class="n">workerRequest</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 ProcessRequest 方法中，创建了 HttpWorkerRequest 的子类 WorkerRequest 对象，并提交给 HttpRuntime 进行处理。WorkerRequest 类中实现了 HttpWorkerRequest 中的抽象方法，其中包括 GetRawUrl 、GetHttpVerbName 等等这一类获取请求相关信息的方法，HTTP 管道调用这些方法以获取请求数据，同时它还包含类似 FlushResponse 这类输出响应的方法，HTTP 管道最终会调用这类方法向客户端发送数据，下面是 FlushResponse 方法的实现，在该方法中我们使用 HttpProcessor 对象向 socket 客户端发送响应数据。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">FlushResponse</span><span class="p">(</span><span class="kt">bool</span> <span class="n">finalFlush</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(!</span><span class="n">_isHeaderSent</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">_processor</span><span class="p">.</span><span class="n">SendHeaders</span><span class="p">(</span><span class="n">_statusCode</span><span class="p">,</span> <span class="n">_responseHeaders</span><span class="p">,</span> <span class="p">-</span><span class="m">1</span><span class="p">,</span> <span class="n">finalFlush</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_isHeaderSent</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">_responseBodyBytes</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">byte</span><span class="p">[]</span> <span class="n">data</span> <span class="p">=</span> <span class="n">_responseBodyBytes</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_processor</span><span class="p">.</span><span class="n">SendResponse</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_responseBodyBytes</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">byte</span><span class="p">[]&gt;();</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">finalFlush</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">_processor</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到这一步，我们已经可以运行 ASP.NET 程序了，但是只实现抽象方法还不能提供足够的信息给 HTTP 管道，例如 HTTP 管道无法得知 POST 数据和 Cookie 数据，要提供这些信息我们还需要重写一些虚拟方法，如 GetKnownRequestHeader 、GetPreloadedEntityBody 等等，实现一些必要的方法之后，ASP.NET 程序就能够良好地运行了。</p>
+
+<h2>总结</h2>
+
+<p>编写支持 ASP.NET 的 Web 服务器，并不是一件难事，这得益于 ASP.NET 优雅的设计，只要向运行时提供必要的信息，HTTP 管道就能够正确地进行处理。</p>
+
+<p>文中只贴了一小部分代码，你可以通过 <a href="https://github.com/lcomplete/AspNetServer">https://github.com/lcomplete/AspNetServer</a> 该地址查看所有代码。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">lcomplete</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-16T05:44:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-number/'>C#</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://lcomplete.github.io/blog/2013/07/16/use-csharp-write-aspnet-web-server/" data-via="" data-counturl="http://lcomplete.github.io/blog/2013/07/16/use-csharp-write-aspnet-web-server/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/28/sevenlang-prolog/" title="Previous Post: 七周七语言之使用prolog解决爱因斯坦斑马难题">&laquo; 七周七语言之使用prolog解决爱因斯坦斑马难题</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/16/use-csharp-write-aspnet-web-server/">使用 C# 编写简易 ASP.NET Web 服务器</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/28/sevenlang-prolog/">七周七语言之使用prolog解决爱因斯坦斑马难题</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/18/read-professional-programmers/">我读《程序员的职业素养》</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/07/clean-code-and-zen-of-python/">《代码整洁之道》与 Python 之禅</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/05/sevenlang-io/">七周七语言之用Io编写领域特定语言</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - lcomplete -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'lcomplete';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lcomplete.github.io/blog/2013/07/16/use-csharp-write-aspnet-web-server/';
+        var disqus_url = 'http://lcomplete.github.io/blog/2013/07/16/use-csharp-write-aspnet-web-server/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

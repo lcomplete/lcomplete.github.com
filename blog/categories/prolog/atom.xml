@@ -4,7 +4,7 @@
   <title><![CDATA[Category: prolog | lcomplete's Blog]]></title>
   <link href="http://lcomplete.github.io/blog/categories/prolog/atom.xml" rel="self"/>
   <link href="http://lcomplete.github.io/"/>
-  <updated>2013-06-29T02:02:15+08:00</updated>
+  <updated>2013-07-17T00:02:15+08:00</updated>
   <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
@@ -129,11 +129,11 @@ house(attr(_,_,_,water,_), Houses).
 规则部分包含了对题目中提示的描述和最终问题的描述，这些定义是为了告诉逻辑引擎，在求值时必须满足这些条件。<br/>
 最终的查询为 all_houses(A) ，prolog 逻辑引擎将会查找出满足结果的房子数组，注意每所房子由它的属性组成，这样最后得到的结果为：</p>
 
-<p>[attr(britsh, horse, red, orange, violinst),   <br/>
- attr(spain, dog, yellow, water, diplomat),   <br/>
- attr(japan, fox, white, milk, painter),   <br/>
- attr(norway, zebra, green, cafe, doctor),   <br/>
- attr(italy, snail, blue, tea, photographer)] .</p>
+<p>[attr(norway, fox, yellow, water, diplomat),  <br/>
+attr(italy, horse, blue, tea, doctor),  <br/>
+attr(britsh, snail, red, milk, photographer),  <br/>
+attr(spain, dog, white, orange, violinst),  <br/>
+attr(japan, zebra, green, cafe, painter)] .</p>
 ]]></content>
   </entry>
   
