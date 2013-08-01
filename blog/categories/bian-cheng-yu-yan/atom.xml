@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 编程语言 | lcomplete's Blog]]></title>
   <link href="http://lcomplete.github.io/blog/categories/bian-cheng-yu-yan/atom.xml" rel="self"/>
   <link href="http://lcomplete.github.io/"/>
-  <updated>2013-07-17T00:02:15+08:00</updated>
+  <updated>2013-08-01T23:39:17+08:00</updated>
   <id>http://lcomplete.github.io/</id>
   <author>
     <name><![CDATA[lcomplete]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[七周七语言之Scala]]></title>
+    <link href="http://lcomplete.github.io/blog/2013/08/01/sevenlang-scala/"/>
+    <updated>2013-08-01T22:06:00+08:00</updated>
+    <id>http://lcomplete.github.io/blog/2013/08/01/sevenlang-scala</id>
+    <content type="html"><![CDATA[<p>“七周七语言”这个系列原本打算每一篇都写一些有用的小程序来阐述所讲的语言，但是由于 Scala 不像 Io 和 Prolog 那样特殊，想不出可以用它来写什么有明显差异化的程序，把一段已知的程序用 Scala 写出来也并不能说明什么，所以我就不重复造轮子啦，不过在介绍到 Scala 的一些特点时，我会引用其他人写好的代码。下面开始介绍这门编程语言。</p>
+
+<p>Scala 是一门结合了面向对象编程和函数式编程特性的语言，它有两个版本，一个运行在 JVM 上，一个运行在 CLR 上，当然由于 Scala 并非微软出品，可想而知其在 CLR 上的实现也不如 JVM 上成熟，因此大多是使用运行在 JVM 上的 Scala，如果想使用一门在 CLR 上运行的函数式编程语言，那么推荐使用微软自家的 F#。</p>
+
+<p>相对 Io、Prolog 来说，Scala 已经应用在一些比较知名的系统中，比如 Twitter，这也使人们敢于大胆地在生产环境上使用 Scala，为什么 Scala 能得到高科技公司的青睐呢，下面我们来具体看一看 Scala 都有哪些优点。</p>
+
+<ol>
+<li>Scala 支持面向对象特性，值得一提的是类扩展有两种途径，一种是继承机制，另一种是使用 trait 的方式，这与 ruby 中的 mixin 类似，可以很好地解决多继承产生的问题。</li>
+<li>Scala 出彩的地方在于它支持两种编程范式，它的强大更多来自于对函数式编程的支持，函数式编程和命令式编程的区别在于，前者关注做什么（what），后者关注如何做（how），前者所产生的代码更清晰、意图更加明显，使用函数式编程操作集合也更加方便。</li>
+<li>语法简洁，Scala 定义方法、类、匿名函数的语法有点类于 ruby，代码越少，需要读的也就越少，可读性也更高。</li>
+<li>对 XML 有着非常好的支持，在 Scala 中 XML 可以说是一等公民，可以像表示字符串一样表示 XML，此外还可以使用内置的类 XPATH 进行查询。</li>
+<li>高效，一些性能测试表明 Scala 和 Java 的性能在同一个水平。</li>
+<li>可扩展性，Scala 语言的名字就来自于 Scalable 一词，这意味着这门语言本身是可以进行扩展的，也就是说可以很方便地编写领域特定语言。看一个简单的例子，<a href="http://www.oschina.net/code/snippet_54100_1283">为整形增加一个计算阶乘的方法“!”</a>。</li>
+<li>并发编程模型，Scala 使用了 Actor 简化并发程序的开发，具有可复用线程的能力，且能更好地利用多核 CPU。</li>
+<li>和 java 的互操作性，在 Scala 中可以直接使用 java 库，这点很重要，这样一来在 Scala 中可以使用大量在 java 社区中已有的资源，比如<a href="http://www.oschina.net/code/snippet_12_4833">在 Scala 中使用 Lucene</a>、<a href="http://www.oschina.net/code/snippet_55364_2708">Scala mp3 播放器</a>（在这个代码片段里还演示了 Actor 的使用）。</li>
+</ol>
+
+
+<p>Scala 提供了一个更简洁的 java，并且可以直接使用 java 库，这使得 Scala 有一个非常好的起点，现在 Scala 社区也在不断地发展壮大，出现了很多框架，比如类似 rails 的开源 web 框架 Lift，也就是说 Scala 不仅可以利用现有的 java 库编写桌面程序，也可以用来编写 Web 程序了，由于构建在 JVM 上，因此也是跨平台的，这么多的优点，相信会有越来越多的人使用 Scala 和越来越多的成功案例出现。</p>
+
+<p>这次虽然没有使用 Scala 编写什么程序，但学习它后让我多了一个选择，以后在需要编写运行在 JVM 上的程序时，首选 Scala。:)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[七周七语言之使用prolog解决爱因斯坦斑马难题]]></title>

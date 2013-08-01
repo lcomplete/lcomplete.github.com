@@ -9,9 +9,7 @@
   <meta name="author" content="lcomplete">
 
   
-  <meta name="description" content="在windows下使用git和octopress还真是个麻烦事，本文记录了在windows下通过cygwin安装git和使用octopress的过程，希望对大家有所帮助。 准备工作 下载 cygwin
-下载 ruby 1.9.3
-注：需要使用RubyInstall的方式进行安装， &hellip;">
+  <meta name="description" content="Bob 大叔在《代码整洁之道》一书的前言打趣着说，当你写的代码在经受代码审查时，如果审查者愤怒的吼道“What the fuck is this shit?”或者“Dude, What the fuck?”等言辞激烈的词语时，那说明你写的是 Bad Code；如果审查者只是漫不经心的吐出几个“ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +65,486 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/07/clean-code-and-zen-of-python/">《代码整洁之道》与 Python 之禅</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-07T11:44:00+08:00" pubdate data-updated="true">Jun 7<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/06/07/clean-code-and-zen-of-python/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bob 大叔在《代码整洁之道》一书的前言打趣着说，当你写的代码在经受代码审查时，如果审查者愤怒的吼道“What the fuck is this shit?”或者“Dude, What the fuck?”等言辞激烈的词语时，那说明你写的是 Bad Code；如果审查者只是漫不经心的吐出几个“What the fuck?”，那说明你写的是 Good Code。这就是衡量代码质量的唯一标准——每分钟骂出“What the fuck?”的频率。</p>
+
+<p>想写出整洁的代码很难，有一部分原因在于糟糕的代码太容易编写。想快点完成任务时，考虑不周全时，忽略安全时，随意命名时，参数过多时，嵌套太深时，未及时更改注释时，违反法则时，重复你自己时等等情形，我们有太多的机会来制造糟糕的代码。只有严肃对待自己的代码，了解哪些事情会使我们的代码变味，才有可能写出整洁的代码。</p>
+
+<p>写代码和写文章在某种程度上有相似之处，好的文章一定有好的可读性，写代码也一样，只有优美干净的代码才能具有良好的可读性。编写具有可读性的代码不光是保持有意义的命名就行，如果你想成为一名更好的程序员，写代码时你需要注意的有很多，比如：</p>
+
+<ol>
+<li>规范本地变量的位置</li>
+<li>使函数尽量短小</li>
+<li>调用者尽可能放在被调用者上面</li>
+<li>保持代码拥有良好的格式</li>
+<li>编写只做一件事的函数</li>
+<li>函数参数不要超过三个</li>
+<li>暴露时序耦合</li>
+<li>使用异常代替返回错误码</li>
+</ol>
+
+
+<p>除此之外，你还须牢记众多设计原则，如：</p>
+
+<ol>
+<li>开放封闭原则（OCP）</li>
+<li>迪米特法则</li>
+<li>依赖倒置原则（DIP）</li>
+<li>单一职责原则（SRP）</li>
+<li>里氏替换原则（LSP）</li>
+<li>不要重复（DRY）</li>
+<li>你不会需要它（YAGNI）</li>
+</ol>
+
+
+<p>当然仅有这些是不够的，这不是骑自行车，学写整洁代码得花许多功夫，必须不断实践，从失败中提取代码的坏味道并从中得到启发。</p>
+
+<p>编写整洁代码，你需要牢记并遵守很多东西，但这并不是循规蹈矩和刻板，而是对简单之美、代码之美的追求。代码整洁之道，是编写优秀代码的一种方法，其核心是尽力使代码保持简单——Keep It Simple, Stupid。判断一个人写的代码的好坏，不是看它的代码写的有多复杂，而是看他有没有把复杂的事物抽象出来并用简单的方式去描述它，此外这个人对代码的态度也至关重要，大多数时候我们并不能从一开始就把代码写的很完美，当我们需要快速做出一个原型，或者一开始代码看起来不错，但新的需求使现有的设计无法满足，如果不对设计进行改动的话，那么代码就会变的丑陋，如果你热爱自己正在做的事情，崇尚代码之美，那么你就会有足够的动力去重构它、完善它，而不是破坏结构使代码腐烂。</p>
+
+<p>保持简单、追求简单，我想这就是编码之中的禅，一种回归本真的境界。这种禅意在 Python 的设计哲学中体现的淋漓尽致，在 Python 解释器中输入“import this”，便会出现经典的 Python 之禅。</p>
+
+<ul>
+<li>Beautiful is better than ugly. <br/>
+优美胜于丑陋。</li>
+<li>Explicit is better than implicit.<br/>
+显式胜于隐式。</li>
+<li>Simple is better than complex.<br/>
+简单胜于复杂。</li>
+<li>Complex is better than complicated.<br/>
+复杂胜于难懂。</li>
+<li>Flat is better than nested.<br/>
+扁平胜于嵌套。</li>
+<li>Sparse is better than dense.<br/>
+分散胜于密集。</li>
+<li>Readability counts.<br/>
+可读性应当被重视。</li>
+<li>Special cases aren&#8217;t special enough to break the rules. Although practicality beats purity.<br/>
+尽管实用性会打败纯粹性，特例也不能凌驾于规则之上。</li>
+<li>Errors should never pass silently. Unless explicitly silenced.<br/>
+除非明确地使其沉默，错误永远不应该默默地溜走。</li>
+<li>In the face of ambiguity, refuse the temptation to guess.<br/>
+面对不明确的定义，拒绝猜测的诱惑。</li>
+<li>There should be one&#8211; and preferably only one &#8211;obvious way to do it.<br/>
+用一种方法，最好只有一种方法来做一件事。</li>
+<li>Although that way way not be obvious at first unless you&#8217;re Dutch.<br/>
+虽然一开始这种方法并不是显而易见的，但谁叫你不是Python之父呢。</li>
+<li>Now is better than never. Although never is often better than <em>right</em> now.<br/>
+做比不做好，但立马去做有时还不如不做。</li>
+<li>If the implementation is hard to explain, it&#8217;s a bad idea.<br/>
+如果实现很难说明，那它是个坏想法。</li>
+<li>If the implementation is easy to explain, it may be a good idea.<br/>
+如果实现容易解释，那它有可能是个好想法。</li>
+<li>Namespaces are one honking great idea &#8211; let&#8217;s do more of those!<br/>
+命名空间是个绝妙的想法，让我们多多地使用它们吧！</li>
+</ul>
+
+
+<p>道着重于方法，禅着重于态度，让我们把这两者相结合，做一个有追求的程序员，为成为软件匠人而奋斗吧。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/05/sevenlang-io/">七周七语言之用Io编写领域特定语言</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-05T05:56:00+08:00" pubdate data-updated="true">Jun 5<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/06/05/sevenlang-io/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Io 语言是在2002年创造出来的，虽然距今已经有11个年头了，但是对于一门编程语言来说，它还只能算是一门年轻的语言。Io 并不是主流编程语言，没有什么名气，就连名字取的也并不适合推广，io 有太多其他的含义了，用google直接搜索 io 的话，很难找到关于这门编程语言的资料，英文推荐搜索“io language”，中文则建议搜索“io 编程语言”。</p>
+
+<h2>Io 的优缺点</h2>
+
+<p>Io 是个小众语言，文档不足，这是其中的一个缺点，但是这门语言吸收了许多语言的特点，具有很高的学习价值。Io 的设计借鉴了 SmallTalk、Self、NewtonScript、Act1、LISP和 Lua 的一些特点，它是一门基于原型式设计的编程语言，具有面向对象特性，语法概念极少，它没有关键字，所以能够在很短的时间内熟悉语法，Io 还有出色的并发库，利用它能够以简单直观的方式编写并发程序。</p>
+
+<p>Io 有很少的语法规则和语言特性，这似乎在某种程度上束缚了它的能力，但是使用 Io 可以很容易地扩展这门语言自身的语法，我们可以自定义运算符或改变运算符的行为，也可以使用元编程在任何时候改变任何对象的行为。正是这些高扩展性和可定制性使得 Io 在创造<strong>领域特定语言</strong>（Domain Specific Language，简称DSL）方面具有非常强大的能力，我们可以利用它创造出自己喜欢的语法，编写出<strong>能够编写程序的程序</strong>，学习 Io 颇具启发性，怎样利用 Io 打造出能够提高编程效率的 DSL 更是一个值得深入研究的课题。</p>
+
+<h2>什么是领域特定语言？</h2>
+
+<p>Martin Flower 在《领域特定语言》一书中给出的定义是：针对某一特定语言，具有受限表达性的一种计算机程序设计语言。DSL 不是图灵完备的，所以它的表达能力有限；由于它是领域特定的，它的出现往往是为了消除业务领域的复杂性，所以 DSL 一般是整洁的、易于使用且接近自然语言的。我们平时在编码的过程中其实会接触到很多领域特定语言，比如 CSS、HTML、XML、JSON、正则表达式、XAML，他们都是针对某一领域的，“求专不求全”，CSS用于定义Web页面样式；HTML用于定义Web界面元素；XML、JSON用于描述数据，这些数据可以作为纯数据，也可作为某种行为的配置。</p>
+
+<p>DSL 从实现角度分为内部DSL和外部DSL，用XML来描述某种行为就是一种常见的外部DSL的形式，利用编程语言自带的语法结构定义出来的 DSL 称为内部DSL，比如时下流行的流畅接口（Fluent Interface）编码方式就是一种内部DSL。上面说到 Io 编程语言可以自定义运算符且具有元编程特性，因此 Io 可以方便的创造出内部DSL，下面我们就通过几个示例来看一看 Io 在这方面的能力。</p>
+
+<h2>使用 Io 创造内部DSL</h2>
+
+<p>先看一个比较简单的例子，可以说在所有的编程语言中都有列表和字典（一些语言中也称为映射）这两种数据结构，在 io 中也不例外，io 中创建列表对象可以使用 list 函数，比如 foo := list(1,2) ，这很方便，然而创建一个字典的写法却比较繁琐，你需要 clone 一个 Map 对象，然后依次调用 atPut 方法向其中添加键值对，作为一个常用的数据结构，这样写不仅会影响效率而且会使代码变的臃肿，纵观其他编程语言，大部分都有相应的字典初始化语法糖，常用的写法为 {&#8220;key&#8221;:&#8221;value&#8221;} 结构，下面我们就在 io 中来创造这种语法糖。</p>
+
+<figure class='code'><figcaption><span>dict.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">OperatorTable</span> <span class="n">addAssignOperator</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;atPutNumber&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Map</span> <span class="n">atPutNumber</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>  <span class="nb">self</span> <span class="n">atPut</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">evalArgAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">asMutable</span> <span class="n">removePrefix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span> <span class="n">removeSuffix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">evalArgAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">curlyBrackets</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>  <span class="n">data</span> <span class="p">:</span><span class="o">=</span> <span class="no">Map</span> <span class="nb">clone</span>
+</span><span class='line'>  <span class="n">call</span> <span class="n">message</span> <span class="n">arguments</span> <span class="n">foreach</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">data</span> <span class="n">doMessage</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">data</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">squareBrackets</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">arr</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">message</span> <span class="n">arguments</span> <span class="n">foreach</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">arr</span> <span class="n">push</span><span class="p">(</span><span class="n">call</span> <span class="n">sender</span> <span class="n">doMessage</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>    <span class="n">arr</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">doFile</span><span class="p">(</span><span class="s2">&quot;dict_sample.io&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>先简单说明一下上面这段代码，OperatorTable 中保存了可用的操作符号表，我们可以使用 addAssignOperator 方法向其中添加用于赋值的操作符号，并将其映射到第二个参数所指定的方法中，第一行代码的意思为将 : 符号映射到 atPutNumber 方法中，当在代码中碰到 <strong>:</strong> 符号时，将调用 <strong>atPutNumber</strong> 方法；<strong>curlyBrackets</strong>、<strong>squareBrackets</strong> 为 io 中的特殊变量，将方法赋值给它们相当于改变 {} 和 [] 符号的行为，在我们的代码中，指定了当碰到 { 符号时初始化 Map 对象，接着循环处理参数，这里的参数是用 , 符号分段的，data doMessage 方法相当于以data为上下文执行参数中的代码，参数代码中若碰到 : 符号则会调用 atPutNumber 方法，将符号左边的参数当作键，右边的参数当作值存入data中，最后返回data。</p>
+
+<p>注意，最后一行的 <strong>doFile</strong> 方法是执行另一文件中的代码的意思，为什么这个例子要分成两个文件呢？主要是因为虽然我们在操作符号表里面添加了一个符号，但是在这个文件的执行上下文中，是不会起效果的，只有调用 doString 或 doFile 才会起效，所以将创建字典的代码放在了下面这个文件中。</p>
+
+<figure class='code'><figcaption><span>dict_sample.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">dict</span> <span class="p">:</span><span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lcomplete&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;array&quot;</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;hello&quot;</span> <span class="p">:</span> <span class="s2">&quot;io&quot;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很简洁吧，而且还支持嵌套定义哦。</p>
+
+<p>通过第一个例子，相信各位已经能看出 io 在创造内部dsl上的灵活性了，接下来我们看一个更强大的例子，使用 io 让编写html变的更有禅意，何谓禅意，其实是受到 Sublime 上的 ZenCode 插件的启发，使用 ZenCode 语法可以快速的编写 html 片段。这次我们先看一下使用 dsl 的方式。</p>
+
+<figure class='code'><figcaption><span>enhance_html.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">zencode</span><span class="p">(</span><span class="no">Html</span> <span class="n">html</span><span class="o">&gt;</span><span class="n">head</span><span class="o">+</span><span class="n">body</span><span class="o">&gt;</span><span class="n">div!content</span><span class="vg">$id</span><span class="vi">@class</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不难发现，这个语法已经跟宿主语言几乎没有任何关系，是一门彻底的内部dsl，上面这段代码生成的 html 如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;id&quot;</span> <span class="na">class=</span><span class="s">&quot;class&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      content
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很强大吧，一行代码就可以生成出这么多的 html，现在我们再看看这个 dsl 是如何定义出来的。</p>
+
+<figure class='code'><figcaption><span>zencode.io</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">forward</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">call</span> <span class="n">message</span> <span class="nb">name</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">root</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Object</span> <span class="nb">clone</span> <span class="k">do</span><span class="p">(</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">OperatorTable</span> <span class="n">addOperator</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">@</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">classname</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">attrs</span> <span class="n">append</span><span class="p">(</span><span class="s2">&quot; class=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">classname</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="n">interpolate</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">$</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">attrs</span> <span class="n">append</span><span class="p">(</span><span class="s2">&quot; id=</span><span class="se">\&quot;</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="n">interpolate</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&gt;</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="n">tag</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">parent</span> <span class="p">:</span><span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">+</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nb">self</span> <span class="n">parent</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">html</span> <span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>            <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="n">tag</span>
+</span><span class='line'>            <span class="nb">self</span> <span class="n">parent</span> <span class="n">childs</span> <span class="n">append</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">*</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">count</span><span class="p">,</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">count</span> <span class="p">:</span><span class="o">=</span> <span class="n">count</span> <span class="n">asNumber</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">!</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">content</span><span class="p">,</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">content</span> <span class="p">:</span><span class="o">=</span> <span class="n">content</span>
+</span><span class='line'>        <span class="nb">self</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">forward</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>        <span class="nb">name</span> <span class="p">:</span><span class="o">=</span> <span class="n">call</span> <span class="n">message</span> <span class="nb">name</span>
+</span><span class='line'>        <span class="n">html</span> <span class="p">:</span><span class="o">=</span> <span class="no">Html</span> <span class="nb">clone</span>
+</span><span class='line'>        <span class="n">html</span> <span class="n">tag</span> <span class="p">:</span><span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>        <span class="n">root</span> <span class="o">=</span> <span class="n">html</span>
+</span><span class='line'>        <span class="n">html</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">init</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">attrs</span> <span class="p">:</span><span class="o">=</span> <span class="n">list</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">count</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">parent</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">content</span> <span class="p">:</span><span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="n">flush</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">root</span> <span class="n">render</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Html</span> <span class="n">render</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="n">count</span> <span class="n">repeat</span><span class="p">(</span>
+</span><span class='line'>        <span class="n">writeln</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span><span class="nb">self</span> <span class="n">tag</span><span class="p">,</span><span class="nb">self</span> <span class="n">attrs</span> <span class="n">join</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">childIndent</span> <span class="p">:</span><span class="o">=</span> <span class="n">indent</span> <span class="o">.</span><span class="n">.</span> <span class="s2">&quot;  &quot;</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nb">self</span> <span class="n">content</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">writeln</span><span class="p">(</span><span class="n">childIndent</span><span class="p">,</span><span class="nb">self</span> <span class="n">content</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span> <span class="n">childs</span> <span class="n">foreach</span><span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">arg</span> <span class="n">render</span><span class="p">(</span><span class="n">childIndent</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>        <span class="n">writeln</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="s2">&quot;&lt;/&quot;</span><span class="p">,</span><span class="nb">self</span> <span class="n">tag</span><span class="p">,</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">zencode</span> <span class="p">:</span><span class="o">=</span> <span class="nb">method</span><span class="p">(</span><span class="n">html</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">html</span> <span class="n">flush</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">doFile</span><span class="p">(</span><span class="s2">&quot;enhance_html.io&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有几处需要说明一下，forward 是一个特殊方法，相当于 ruby 中的 method_missing ，当调用的方法不存在时，系统将会把调用转向到 forward 方法，这就给了我们很大的灵活性，我们无需定义 html、head 等方法，这些未定义的方法会自动转向到 forward 中处理；注意，一共有两个 forward 方法，分别应用在 Object 和 Html 对象上，只有 Html html 会返回 Html 对象，其他的未定义方法会转向到 Object 的 forward 方法上，这里直接将方法名作为字符串返回，新添加的 @、$ 等操作符，将会把接受到的字符串进行处理，最后再返回一个 Html 对象以进行链式调用。</p>
+
+<h2>总结</h2>
+
+<p>在 Io 中可以轻松地定义操作符、实现动态方法或更改所有对象的行为，这些能力是强大的，也是危险的，使用之前需要仔细衡量。当然，如果只是用它来做某一件事情，比如用来编写上面的 ZenCode 时，那么可以大胆发挥自己的想象力，在它的基础上构建一门属于自己的语言。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -488,6 +966,14 @@ be the one of these people.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/08/01/sevenlang-scala/">七周七语言之Scala</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/01/rubbish-information-on-internet/">浅谈中国互联网上的垃圾信息</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/16/use-csharp-write-aspnet-web-server/">使用 C# 编写简易 ASP.NET Web 服务器</a>
       </li>
     
@@ -497,14 +983,6 @@ be the one of these people.</p>
     
       <li class="post">
         <a href="/blog/2013/06/18/read-professional-programmers/">我读《程序员的职业素养》</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/07/clean-code-and-zen-of-python/">《代码整洁之道》与 Python 之禅</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/05/sevenlang-io/">七周七语言之用Io编写领域特定语言</a>
       </li>
     
   </ul>
