@@ -50,7 +50,7 @@ bundle install
 ```
 fast-stemmer是执行bundle install时所需的一个依赖项，若不安装的话则bundle install命令执行到大半时会失败，这个时候需要根据提示安装其他依赖项，再重复这个步骤，若出错再重复，在天朝这么坑爹的网络环境下，有时又会出现无法下载的情况，真是好不折腾。若使用goagent，在无法下载时，可设置shell通过代理上网，命令如下。
 ```
-export proxy=127.0.0.1:8087
+export http_proxy=127.0.0.1:8087
 ```
 
 ## 使用octopress
