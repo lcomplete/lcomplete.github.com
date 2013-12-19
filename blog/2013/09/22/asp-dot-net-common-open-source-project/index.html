@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>大型 ASP.NET 应用中常用的开源项目 - lcomplete's Blog</title>
+  <meta name="author" content="lcomplete">
+
+  
+  <meta name="description" content="最近几年，涌现了一大批优秀的开源项目，开源软件越来越受到人们的重视，现如今，可以说几乎没有一个大型软件是完全独立于开源项目的，越来越多的应用构建于开源项目之上，ASP.NET 应用也不例外，以往不太 “Open” 的微软也开始大力发展开源项目，将其 MVC 和 EntityFramework &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lcomplete.github.io/blog/2013/09/22/asp-dot-net-common-open-source-project">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="lcomplete's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">lcomplete's Blog</a></h1>
+  
+    <h2>一个带着极客精神正努力成为黑客的程序员</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lcomplete.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">大型 ASP.NET 应用中常用的开源项目</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-22T08:34:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>最近几年，涌现了一大批优秀的开源项目，开源软件越来越受到人们的重视，现如今，可以说几乎没有一个大型软件是完全独立于开源项目的，越来越多的应用构建于开源项目之上，ASP.NET 应用也不例外，以往不太 “Open” 的微软也开始大力发展开源项目，将其 MVC 和 EntityFramework 等框架纷纷开源。</p>
+
+<p>使用开源软件往往意味着减少软件开发成本、提升软件质量，开源是一股强大的力量，它帮助我们减少重复性的工作，提升我们这些程序员的生活品质，今天我们就来列举一些在构建大型 ASP.NET 应用中经常使用到的开源项目。</p>
+
+<ol>
+<li><p><a href="http://logging.apache.org/log4net/">log4net</a></p>
+
+<p> log4net 是 log4j 的一个移植版本，它是一个<strong>强大的日志记录组件</strong>，可以使用不同的日志级别记录日志，也可以将日志写入到文件、控制台、事件日志和数据库中，通过在XML配置中修改日志级别，可以很灵活地控制哪些日志需要记录，根据需要在开发环境和生产环境中定制配置，可以灵活地对应用程序进行跟踪调试。</p></li>
+<li><p><a href="http://json.codeplex.com/">Json.NET</a></p>
+
+<p> AJAX 的广泛使用在一定程序上促进了 json 数据格式的流行，作为轻量级的数据交换格式，json 在很多场合下比 xml 更加合适，那么对于这个频繁使用的数据格式，一个<strong>高性能的序列化、反序列化工具</strong>自然是必不可少，json.net 便满足这一需求，使用它你可以灵活高效地在 json 数据和 .net 对象之间进行转换、使用 linq 语法对 json 数据进行查询、生成缩进好的 json 、在 json 和 xml 之间进行转换。</p></li>
+<li><p><a href="http://docs.structuremap.net/">StructureMap</a></p>
+
+<p> ASP.NET MVC 框架很好地贯彻了面向接口编程这一设计原则，这使得我们可以很容易替换 MVC 框架中的一些默认实现，比如通过替换默认的依赖解析器，我们可以得到 Controller 中获取依赖对象的控制权，因此便可以决定 Controller 中使用的 Service 接口或 Repository 接口的具体实现。如何决定接口的具体实现是什么？如果初始化对象需要提供构造参数，那么该如何处理依赖？这里面涉及许多枯燥的配对工作和复杂的依赖处理工作，自己实现一套 IoC 容器的代价是巨大的，还好我们有开源的 StructureMap。有很多文章介绍 StructureMap，说它是一个轻量级的<strong> IoC 框架</strong>，其实不然，StructureMap 其实是一个代码量大且比较复杂的框架，也许是因为它没有其他第三方依赖，且基础功能使用起来比较简单的关系，使人们产生了这种错觉。</p>
+
+<p> StructureMap 除了一些大多数 IoC 框架都有的一些功能外，还有一些非常强大的特色功能，比如扫描程序集自动匹配子类型，这能够减少许多不必要的配置，此外它还提供了插件系统，通过编写插件可以使应用程序具有高可伸缩性，配合面向切面编程组件可谓是如虎添翼。</p></li>
+<li><p><a href="http://www.quartz-scheduler.net/">Quartz.NET</a></p>
+
+<p> 随着 Web 应用的复杂性不断加大，单纯的响应处理机制将无法满足一些需求，比如大量的数据统计、报表输出，如果等到请求出现再处理，那往往是不可接受的，这个时候我们需要将一些任务放在后台定时运行，对于简单的任务，也许使用 .net 自带的 Timer 就足以搞定，但应用是在不断进化中的，为了得到良好的可扩展性，我们应该使用一种可以满足更多触发条件的机制，可以说 Quartz.NET 是最佳选择。</p>
+
+<p> Quartz.NET 是一个<strong>功能齐全的任务调度系统</strong>，任务配置可以使用 XML、数据库或编程方式，使用它我们可以在任务调度上获得很高的可扩展性。有时候高可扩展性也意味着高复杂性，就像一个复杂的设计模式会带来理解上的困难一样，庆幸的是引入 Quartz.NET 并不会带来什么复杂性，在配置中可以使用 Cron 表达式描述任务的触发时间，只要熟悉这个概念便能完美控制任务运行时间。</p>
+
+<p> 最后值得一提的是，Quartz.NET 提供了远程代理的方式控制在远端服务器上的 Quartz 任务，这大大方便了任务的监控、管理和测试。</p></li>
+<li><p><a href="http://topshelf-project.com/">Topshelf</a></p>
+
+<p> 刚才说到对于大型应用，后台的任务调度是少不了的，如果把任务放在网站中运行，那将是不可靠的，因为很多情况会导致 iis 应用程序池重启，所以一般情况下将使用 Windows 服务，使用 Topshelf 就是创建<strong> Windows 服务</strong>的一种方法，它拥有<strong>跨平台</strong>特性，相比 .NET 中提供的创建 Windows 服务的 API，它的优势是使用简单且可以从控制台运行，这给开发和调试服务提供了非常大的便利。</p></li>
+</ol>
+
+
+<p>.NET 中已有的优秀开源项目非常之多，并且不断地有新项目涌现，针对特定需求的组件大家可以上 github 上找找，本文就先列举这些吧。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">lcomplete</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-22T08:34:00+08:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/kai-yuan-xiang-mu/'>开源项目</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://lcomplete.github.io/blog/2013/09/22/asp-dot-net-common-open-source-project/" data-via="" data-counturl="http://lcomplete.github.io/blog/2013/09/22/asp-dot-net-common-open-source-project/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/06/economic-cost-of-play-music-at-work-place/" title="Previous Post: 论工作场所播放音乐的经济成本">&laquo; 论工作场所播放音乐的经济成本</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/22/asp-dot-net-common-open-source-project/">大型 ASP.NET 应用中常用的开源项目</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/06/economic-cost-of-play-music-at-work-place/">论工作场所播放音乐的经济成本</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/01/sevenlang-scala/">七周七语言之Scala</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/01/rubbish-information-on-internet/">浅谈中国互联网上的垃圾信息</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/16/use-csharp-write-aspnet-web-server/">使用 C# 编写简易 ASP.NET Web 服务器</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - lcomplete -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'lcomplete';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lcomplete.github.io/blog/2013/09/22/asp-dot-net-common-open-source-project/';
+        var disqus_url = 'http://lcomplete.github.io/blog/2013/09/22/asp-dot-net-common-open-source-project/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
